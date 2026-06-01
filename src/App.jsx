@@ -400,28 +400,19 @@ function App() {
         eventTimestamp: new Date().toISOString(),
 
         // NO LOGIN SYSTEM — customerId IS null
-
         customerId: null,
-
         sessionId,
-
         device: {
           browser: getBrowser(),
-
           operatingSystem: getOperatingSystem(),
-
           deviceType: getDeviceType(),
         },
-
         market: {
           utmSource: queryParams.get("utm_source") || "DIRECT",
-
           campaign: queryParams.get("utm_campaign") || "UNKNOWN",
         },
-
         referrer: {
           url: window.location.origin + window.location.pathname,
-
           referrer: document.referrer || "DIRECT",
         },
       };

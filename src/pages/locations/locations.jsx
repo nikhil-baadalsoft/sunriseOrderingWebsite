@@ -179,11 +179,9 @@ const captureEvent = async (
       eventSequence,
       eventTimestamp:
         new Date().toISOString(),
-
-      customerId: crypto.randomUUID(),
-
+      customerId: null,
       sessionId,
-
+      page: window.location.origin + window.location.pathname,
       device: {
         browser: getBrowser(),
 
