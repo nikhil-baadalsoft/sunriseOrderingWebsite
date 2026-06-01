@@ -72,11 +72,17 @@ function App() {
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
 
   const currentPage =
-    window.location.pathname === "/"
-      ? "HOME"
-      : window.location.pathname === "/cart"
-        ? "CART"
-        : "OTHER";
+   window.location.pathname === "/"
+    ? "HOME"
+    : window.location.pathname === "/cart"
+    ? "CART"
+    : window.location.pathname === "/checkout"
+    ? "CHECKOUT"
+    : window.location.pathname === "/order-success"
+    ? "ORDER_SUCCESS"
+    : window.location.pathname === "/locations"
+    ? "LOCATIONS"
+    : "OTHER";
 
   // -----------------------------------
   // STORAGE KEYS — SINGLE GLOBAL KEYS
@@ -324,118 +330,192 @@ function App() {
 
   useEffect(() => {
 
-    const trackExit = () => {
+    // const trackExit = () => {
 
-      // PAGE NAME
+    //   // PAGE NAME
 
-      const currentPage =
-        window.location.pathname === "/"
-          ? "HOME"
-          : window.location.pathname === "/cart"
-            ? "CART"
-            : window.location.pathname === "/checkout"
-              ? "CHECKOUT"
-              : window.location.pathname === "/order-success"
-                ? "ORDER_SUCCESS"
-                : window.location.pathname === "/locations"
-                  ? "LOCATIONS"
-                  : "OTHER";
+    //   const currentPage =
+    //     window.location.pathname === "/"
+    //       ? "HOME"
+    //       : window.location.pathname === "/cart"
+    //         ? "CART"
+    //         : window.location.pathname === "/checkout"
+    //           ? "CHECKOUT"
+    //           : window.location.pathname === "/order-success"
+    //             ? "ORDER_SUCCESS"
+    //             : window.location.pathname === "/locations"
+    //               ? "LOCATIONS"
+    //               : "OTHER";
 
-      // QUERY PARAMS
+    //   // QUERY PARAMS
 
-      const queryParams =
-        new URLSearchParams(window.location.search);
+    //   const queryParams =
+    //     new URLSearchParams(window.location.search);
 
-      // SINGLE GLOBAL STORAGE KEYS
-      // (same as captureEvent — no page suffix)
+    //   // SINGLE GLOBAL STORAGE KEYS
+    //   // (same as captureEvent — no page suffix)
 
-      const EVENT_MAP_KEY = "event-map";
+    //   const EVENT_MAP_KEY = "event-map";
 
-      const EVENT_COUNTER_KEY = "event-counter";
+    //   const EVENT_COUNTER_KEY = "event-counter";
 
-      // GET SAVED MAP
+    //   // GET SAVED MAP
 
-      const savedEventMap =
-        JSON.parse(
-          sessionStorage.getItem(EVENT_MAP_KEY)
-        ) || {};
+    //   const savedEventMap =
+    //     JSON.parse(
+    //       sessionStorage.getItem(EVENT_MAP_KEY)
+    //     ) || {};
 
-      // GET COUNTER — DEFAULT 4
+    //   // GET COUNTER — DEFAULT 4
 
-      let currentCounter =
-        Number(
-          sessionStorage.getItem(EVENT_COUNTER_KEY)
-        ) || 4;
+    //   let currentCounter =
+    //     Number(
+    //       sessionStorage.getItem(EVENT_COUNTER_KEY)
+    //     ) || 4;
 
-      // REUSE OR CREATE EXIT EVENT SEQUENCE
+    //   // REUSE OR CREATE EXIT EVENT SEQUENCE
 
-      let eventSequence;
+    //   let eventSequence;
 
-      if (savedEventMap["EXIT_PAGE"] !== undefined) {
+    //   if (savedEventMap["EXIT_PAGE"] !== undefined) {
 
-        eventSequence = savedEventMap["EXIT_PAGE"];
+    //     eventSequence = savedEventMap["EXIT_PAGE"];
 
-      } else {
+    //   } else {
 
-        eventSequence = currentCounter;
+    //     eventSequence = currentCounter;
 
-        savedEventMap["EXIT_PAGE"] = eventSequence;
+    //     savedEventMap["EXIT_PAGE"] = eventSequence;
 
-        currentCounter++;
+    //     currentCounter++;
 
-        sessionStorage.setItem(
-          EVENT_MAP_KEY,
-          JSON.stringify(savedEventMap)
-        );
+    //     sessionStorage.setItem(
+    //       EVENT_MAP_KEY,
+    //       JSON.stringify(savedEventMap)
+    //     );
 
-        sessionStorage.setItem(
-          EVENT_COUNTER_KEY,
-          currentCounter
-        );
-      }
+    //     sessionStorage.setItem(
+    //       EVENT_COUNTER_KEY,
+    //       currentCounter
+    //     );
+    //   }
 
-      // FULL PAYLOAD
+    //   // FULL PAYLOAD
 
-      const payload = {
-        eventName: "EXIT_PAGE",
+    //   const payload = {
+    //     eventName: "EXIT_PAGE",
 
-        page: currentPage,
+    //     page: currentPage,
 
-        eventSequence,
+    //     eventSequence,
 
-        eventTimestamp: new Date().toISOString(),
+    //     eventTimestamp: new Date().toISOString(),
 
-        // NO LOGIN SYSTEM — customerId IS null
-        customerId: null,
-        sessionId,
-        device: {
-          browser: getBrowser(),
-          operatingSystem: getOperatingSystem(),
-          deviceType: getDeviceType(),
-        },
-        market: {
-          utmSource: queryParams.get("utm_source") || "DIRECT",
-          campaign: queryParams.get("utm_campaign") || "UNKNOWN",
-        },
-        referrer: {
-          url: window.location.origin + window.location.pathname,
-          referrer: document.referrer || "DIRECT",
-        },
-      };
+    //     // NO LOGIN SYSTEM — customerId IS null
+    //     customerId: null,
+    //     sessionId,
+    //     device: {
+    //       browser: getBrowser(),
+    //       operatingSystem: getOperatingSystem(),
+    //       deviceType: getDeviceType(),
+    //     },
+    //     market: {
+    //       utmSource: queryParams.get("utm_source") || "DIRECT",
+    //       campaign: queryParams.get("utm_campaign") || "UNKNOWN",
+    //     },
+    //     referrer: {
+    //       url: window.location.origin + window.location.pathname,
+    //       referrer: document.referrer || "DIRECT",
+    //     },
+    //   };
 
-      // SEND BEACON
+    //   // SEND BEACON
 
-      navigator.sendBeacon(
-        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-        new Blob(
-          [JSON.stringify(payload)],
-          { type: "application/json" }
-        )
-      );
-    };
+    //   navigator.sendBeacon(
+    //     "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
+    //     new Blob(
+    //       [JSON.stringify(payload)],
+    //       { type: "application/json" }
+    //     )
+    //   );
+    // };
 
     // MOBILE + DESKTOP
+  const trackExit = () => {
+  const currentPage =
+    window.location.pathname === "/"
+      ? "HOME"
+      : window.location.pathname === "/cart"
+        ? "CART"
+        : window.location.pathname === "/checkout"
+          ? "CHECKOUT"
+          : window.location.pathname === "/order-success"
+            ? "ORDER_SUCCESS"
+            : window.location.pathname === "/locations"
+              ? "LOCATIONS"
+              : "OTHER";
 
+  const queryParams = new URLSearchParams(window.location.search);
+
+  const EVENT_MAP_KEY = "event-map";
+  const EVENT_COUNTER_KEY = "event-counter";
+
+  const savedEventMap =
+    JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
+
+  let currentCounter =
+    Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
+
+  let eventSequence;
+
+  // ✅ SAME LOGIC AS OTHER EVENTS
+  if (savedEventMap["EXIT_PAGE"] !== undefined) {
+    eventSequence = savedEventMap["EXIT_PAGE"];
+  } else {
+    eventSequence = currentCounter;
+
+    savedEventMap["EXIT_PAGE"] = eventSequence;
+
+    currentCounter++;
+
+    sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+    sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+  }
+
+  const payload = {
+    eventName: "EXIT_PAGE",
+    page: currentPage,
+    eventSequence,
+    eventTimestamp: new Date().toISOString(),
+
+    customerId: null,
+
+    sessionId,
+
+    device: {
+      browser: getBrowser(),
+      operatingSystem: getOperatingSystem(),
+      deviceType: getDeviceType(),
+    },
+
+    market: {
+      utmSource: queryParams.get("utm_source") || "DIRECT",
+      campaign: queryParams.get("utm_campaign") || "UNKNOWN",
+    },
+
+    referrer: {
+      url: window.location.origin + window.location.pathname,
+      referrer: document.referrer || "DIRECT",
+    },
+  };
+
+  navigator.sendBeacon(
+    "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
+    new Blob([JSON.stringify(payload)], {
+      type: "application/json",
+    })
+  );
+};
     const handleVisibility = () => {
       if (document.visibilityState === "hidden") {
         trackExit();
