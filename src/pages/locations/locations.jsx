@@ -181,7 +181,7 @@ const captureEvent = async (
         new Date().toISOString(),
       customerId: "",
       sessionId,
-      page: window.location.origin + window.location.pathname,
+      page: "LOCATION_ORDERING",
       device: {
         browser: getBrowser(),
 
