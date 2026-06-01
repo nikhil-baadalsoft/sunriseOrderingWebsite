@@ -333,7 +333,13 @@ function App() {
           ? "HOME"
           : window.location.pathname === "/cart"
             ? "CART"
-            : "OTHER";
+            : window.location.pathname === "/checkout"
+              ? "CHECKOUT"
+              : window.location.pathname === "/order-success"
+                ? "ORDER_SUCCESS"
+                : window.location.pathname === "/locations"
+                  ? "LOCATIONS"
+                  : "OTHER";
 
       // QUERY PARAMS
 
