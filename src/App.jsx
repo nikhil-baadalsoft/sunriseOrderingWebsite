@@ -72,17 +72,17 @@ function App() {
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
 
   const currentPage =
-   window.location.pathname === "/"
-    ? "HOME"
-    : window.location.pathname === "/cart"
-    ? "CART"
-    : window.location.pathname === "/checkout"
-    ? "CHECKOUT"
-    : window.location.pathname === "/order-success"
-    ? "ORDER_SUCCESS"
-    : window.location.pathname === "/locations"
-    ? "LOCATIONS"
-    : "OTHER";
+    window.location.pathname === "/"
+      ? "HOME"
+      : window.location.pathname === "/cart"
+        ? "CART"
+        : window.location.pathname === "/checkout"
+          ? "CHECKOUT"
+          : window.location.pathname === "/order-success"
+            ? "ORDER_SUCCESS"
+            : window.location.pathname === "/locations"
+              ? "LOCATIONS"
+              : "OTHER";
 
   // -----------------------------------
   // STORAGE KEYS — SINGLE GLOBAL KEYS
@@ -441,81 +441,81 @@ function App() {
     // };
 
     // MOBILE + DESKTOP
-  const trackExit = () => {
-  const currentPage =
-    window.location.pathname === "/"
-      ? "HOME"
-      : window.location.pathname === "/cart"
-        ? "CART"
-        : window.location.pathname === "/checkout"
-          ? "CHECKOUT"
-          : window.location.pathname === "/order-success"
-            ? "ORDER_SUCCESS"
-            : window.location.pathname === "/locations"
-              ? "LOCATIONS"
-              : "OTHER";
+    const trackExit = () => {
+      const currentPage =
+        window.location.pathname === "/"
+          ? "HOME"
+          : window.location.pathname === "/cart"
+            ? "CART"
+            : window.location.pathname === "/checkout"
+              ? "CHECKOUT"
+              : window.location.pathname === "/order-success"
+                ? "ORDER_SUCCESS"
+                : window.location.pathname === "/locations"
+                  ? "LOCATIONS"
+                  : "OTHER";
 
-  const queryParams = new URLSearchParams(window.location.search);
+      const queryParams = new URLSearchParams(window.location.search);
 
-  const EVENT_MAP_KEY = "event-map";
-  const EVENT_COUNTER_KEY = "event-counter";
+      const EVENT_MAP_KEY = "event-map";
+      const EVENT_COUNTER_KEY = "event-counter";
 
-  const savedEventMap =
-    JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
+      const savedEventMap =
+        JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
 
-  let currentCounter =
-    Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
+      let currentCounter =
+        Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
 
-  let eventSequence;
+      let eventSequence;
 
-  // ✅ SAME LOGIC AS OTHER EVENTS
-  if (savedEventMap["EXIT_PAGE"] !== undefined) {
-    eventSequence = savedEventMap["EXIT_PAGE"];
-  } else {
-    eventSequence = currentCounter;
+      // ✅ SAME LOGIC AS OTHER EVENTS
+      if (savedEventMap["EXIT_PAGE"] !== undefined) {
+        eventSequence = savedEventMap["EXIT_PAGE"];
+      } else {
+        eventSequence = currentCounter;
 
-    savedEventMap["EXIT_PAGE"] = eventSequence;
+        savedEventMap["EXIT_PAGE"] = eventSequence;
 
-    currentCounter++;
+        currentCounter++;
 
-    sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
-    sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
-  }
+        sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+        sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+      }
 
-  const payload = {
-    eventName: "EXIT_PAGE",
-    page: currentPage,
-    eventSequence,
-    eventTimestamp: new Date().toISOString(),
+      const payload = {
+        eventName: "EXIT_PAGE",
+        page: currentPage,
+        eventSequence,
+        eventTimestamp: new Date().toISOString(),
 
-    customerId: null,
+        customerId: null,
 
-    sessionId,
+        sessionId,
 
-    device: {
-      browser: getBrowser(),
-      operatingSystem: getOperatingSystem(),
-      deviceType: getDeviceType(),
-    },
+        device: {
+          browser: getBrowser(),
+          operatingSystem: getOperatingSystem(),
+          deviceType: getDeviceType(),
+        },
 
-    market: {
-      utmSource: queryParams.get("utm_source") || "DIRECT",
-      campaign: queryParams.get("utm_campaign") || "UNKNOWN",
-    },
+        market: {
+          utmSource: queryParams.get("utm_source") || "DIRECT",
+          campaign: queryParams.get("utm_campaign") || "UNKNOWN",
+        },
 
-    referrer: {
-      url: window.location.origin + window.location.pathname,
-      referrer: document.referrer || "DIRECT",
-    },
-  };
+        referrer: {
+          url: window.location.origin + window.location.pathname,
+          referrer: document.referrer || "DIRECT",
+        },
+      };
 
-  navigator.sendBeacon(
-    "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-    new Blob([JSON.stringify(payload)], {
-      type: "application/json",
-    })
-  );
-};
+      navigator.sendBeacon(
+        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
+        new Blob([JSON.stringify(payload)], {
+          type: "application/json",
+        })
+      );
+    };
     const handleVisibility = () => {
       if (document.visibilityState === "hidden") {
         trackExit();
