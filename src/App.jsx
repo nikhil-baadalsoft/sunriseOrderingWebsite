@@ -257,7 +257,7 @@ function App() {
 
         // NO LOGIN SYSTEM — customerId IS null
 
-        customerId: null,
+        customerId: "",
 
         sessionId,
 

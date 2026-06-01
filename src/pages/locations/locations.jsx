@@ -179,7 +179,7 @@ const captureEvent = async (
       eventSequence,
       eventTimestamp:
         new Date().toISOString(),
-      customerId: null,
+      customerId: "",
       sessionId,
       page: window.location.origin + window.location.pathname,
       device: {
