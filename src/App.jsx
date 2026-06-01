@@ -593,7 +593,7 @@ function App() {
 
     setCart(updatedCart);
 
-    await captureEvent("INCREASE_QUANTITY");
+    // await captureEvent("INCREASE_QUANTITY");
   };
 
   // -----------------------------------
@@ -611,7 +611,7 @@ function App() {
 
     setCart(updatedCart);
 
-    await captureEvent("DECREASE_QUANTITY");
+    // await captureEvent("DECREASE_QUANTITY");
   };
 
   // -----------------------------------
