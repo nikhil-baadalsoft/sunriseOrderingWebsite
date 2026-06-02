@@ -487,9 +487,7 @@ function App() {
         page: currentPage,
         eventSequence,
         eventTimestamp: new Date().toISOString(),
-
-        customerId: null,
-
+        customerId: "",
         sessionId,
 
         device: {
