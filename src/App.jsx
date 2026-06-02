@@ -327,13 +327,80 @@ function App() {
   // -----------------------------------
   // EXIT TRACKING
   // -----------------------------------
+  const trackExit = (currentPage) => {
+    const queryParams = new URLSearchParams(window.location.search);
+
+    const EVENT_MAP_KEY = "event-map";
+    const EVENT_COUNTER_KEY = "event-counter";
+
+    const savedEventMap =
+      JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
+
+    let currentCounter =
+      Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
+
+    let eventSequence;
+
+    if (savedEventMap["EXIT_PAGE"] !== undefined) {
+      eventSequence = savedEventMap["EXIT_PAGE"];
+    } else {
+      eventSequence = currentCounter;
+
+      savedEventMap["EXIT_PAGE"] = eventSequence;
+
+      currentCounter++;
+
+      sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+      sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+    }
+
+    const payload = {
+      eventName: "EXIT_PAGE",
+      page: currentPage,
+      eventSequence,
+      eventTimestamp: new Date().toISOString(),
+      customerId: "",
+      sessionId,
+      device: {
+        browser: getBrowser(),
+        operatingSystem: getOperatingSystem(),
+        deviceType: getDeviceType(),
+      },
+      market: {
+        utmSource: queryParams.get("utm_source") || "DIRECT",
+        campaign: queryParams.get("utm_campaign") || "UNKNOWN",
+      },
+      referrer: {
+        url: window.location.origin + window.location.pathname,
+        referrer: document.referrer || "DIRECT",
+      },
+    };
+
+    navigator.sendBeacon(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events%22,
+    new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      })
+    );
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      trackExit(currentPage);
+    };
+
+    window.addEventListener("pagehide", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("pagehide", handleBeforeUnload);
+    };
+  }, [currentPage]);
 
   useEffect(() => {
 
+
+    // MOBILE + DESKTOP
     // const trackExit = () => {
-
-    //   // PAGE NAME
-
     //   const currentPage =
     //     window.location.pathname === "/"
     //       ? "HOME"
@@ -347,190 +414,91 @@ function App() {
     //               ? "LOCATIONS"
     //               : "OTHER";
 
-    //   // QUERY PARAMS
-
-    //   const queryParams =
-    //     new URLSearchParams(window.location.search);
-
-    //   // SINGLE GLOBAL STORAGE KEYS
-    //   // (same as captureEvent — no page suffix)
+    //   const queryParams = new URLSearchParams(window.location.search);
 
     //   const EVENT_MAP_KEY = "event-map";
-
     //   const EVENT_COUNTER_KEY = "event-counter";
 
-    //   // GET SAVED MAP
-
     //   const savedEventMap =
-    //     JSON.parse(
-    //       sessionStorage.getItem(EVENT_MAP_KEY)
-    //     ) || {};
-
-    //   // GET COUNTER — DEFAULT 4
+    //     JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
 
     //   let currentCounter =
-    //     Number(
-    //       sessionStorage.getItem(EVENT_COUNTER_KEY)
-    //     ) || 4;
-
-    //   // REUSE OR CREATE EXIT EVENT SEQUENCE
+    //     Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
 
     //   let eventSequence;
 
+    //   // ✅ SAME LOGIC AS OTHER EVENTS
     //   if (savedEventMap["EXIT_PAGE"] !== undefined) {
-
     //     eventSequence = savedEventMap["EXIT_PAGE"];
-
     //   } else {
-
     //     eventSequence = currentCounter;
 
     //     savedEventMap["EXIT_PAGE"] = eventSequence;
 
     //     currentCounter++;
 
-    //     sessionStorage.setItem(
-    //       EVENT_MAP_KEY,
-    //       JSON.stringify(savedEventMap)
-    //     );
-
-    //     sessionStorage.setItem(
-    //       EVENT_COUNTER_KEY,
-    //       currentCounter
-    //     );
+    //     sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+    //     sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
     //   }
-
-    //   // FULL PAYLOAD
 
     //   const payload = {
     //     eventName: "EXIT_PAGE",
-
     //     page: currentPage,
-
     //     eventSequence,
-
     //     eventTimestamp: new Date().toISOString(),
-
-    //     // NO LOGIN SYSTEM — customerId IS null
-    //     customerId: null,
+    //     customerId: "",
     //     sessionId,
+
     //     device: {
     //       browser: getBrowser(),
     //       operatingSystem: getOperatingSystem(),
     //       deviceType: getDeviceType(),
     //     },
+
     //     market: {
     //       utmSource: queryParams.get("utm_source") || "DIRECT",
     //       campaign: queryParams.get("utm_campaign") || "UNKNOWN",
     //     },
+
     //     referrer: {
     //       url: window.location.origin + window.location.pathname,
     //       referrer: document.referrer || "DIRECT",
     //     },
     //   };
 
-    //   // SEND BEACON
-
     //   navigator.sendBeacon(
     //     "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-    //     new Blob(
-    //       [JSON.stringify(payload)],
-    //       { type: "application/json" }
-    //     )
+    //     new Blob([JSON.stringify(payload)], {
+    //       type: "application/json",
+    //     })
     //   );
     // };
+    // const handleVisibility = () => {
+    //   if (document.visibilityState === "hidden") {
+    //     trackExit();
+    //   }
+    // };
 
-    // MOBILE + DESKTOP
-    const trackExit = () => {
-      const currentPage =
-        window.location.pathname === "/"
-          ? "HOME"
-          : window.location.pathname === "/cart"
-            ? "CART"
-            : window.location.pathname === "/checkout"
-              ? "CHECKOUT"
-              : window.location.pathname === "/order-success"
-                ? "ORDER_SUCCESS"
-                : window.location.pathname === "/locations"
-                  ? "LOCATIONS"
-                  : "OTHER";
+    // document.addEventListener("visibilitychange", handleVisibility);
 
-      const queryParams = new URLSearchParams(window.location.search);
+    // window.addEventListener("beforeunload", trackExit);
 
-      const EVENT_MAP_KEY = "event-map";
-      const EVENT_COUNTER_KEY = "event-counter";
+    // return () => {
+    //   document.removeEventListener("visibilitychange", handleVisibility);
 
-      const savedEventMap =
-        JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
-
-      let currentCounter =
-        Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
-
-      let eventSequence;
-
-      // ✅ SAME LOGIC AS OTHER EVENTS
-      if (savedEventMap["EXIT_PAGE"] !== undefined) {
-        eventSequence = savedEventMap["EXIT_PAGE"];
-      } else {
-        eventSequence = currentCounter;
-
-        savedEventMap["EXIT_PAGE"] = eventSequence;
-
-        currentCounter++;
-
-        sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
-        sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
-      }
-
-      const payload = {
-        eventName: "EXIT_PAGE",
-        page: currentPage,
-        eventSequence,
-        eventTimestamp: new Date().toISOString(),
-        customerId: "",
-        sessionId,
-
-        device: {
-          browser: getBrowser(),
-          operatingSystem: getOperatingSystem(),
-          deviceType: getDeviceType(),
-        },
-
-        market: {
-          utmSource: queryParams.get("utm_source") || "DIRECT",
-          campaign: queryParams.get("utm_campaign") || "UNKNOWN",
-        },
-
-        referrer: {
-          url: window.location.origin + window.location.pathname,
-          referrer: document.referrer || "DIRECT",
-        },
-      };
-
-      navigator.sendBeacon(
-        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-        new Blob([JSON.stringify(payload)], {
-          type: "application/json",
-        })
-      );
-    };
-    const handleVisibility = () => {
-      if (document.visibilityState === "hidden") {
-        trackExit();
-      }
+    //   window.removeEventListener("beforeunload", trackExit);
+    // };
+    const handleBeforeUnload = (e) => {
+      trackExit(currentPage);
     };
 
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    window.addEventListener("beforeunload", trackExit);
+    window.addEventListener("pagehide", handleBeforeUnload);
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-
-      window.removeEventListener("beforeunload", trackExit);
+      window.removeEventListener("pagehide", handleBeforeUnload);
     };
+  }, [currentPage]);
 
-  }, []);
 
   // -----------------------------------
   // CART ACTIONS
