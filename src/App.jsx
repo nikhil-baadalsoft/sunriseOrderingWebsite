@@ -327,46 +327,39 @@ function App() {
   // -----------------------------------
   // EXIT TRACKING
   // -----------------------------------
-  const trackExit = (currentPage) => {
-    const queryParams = new URLSearchParams(window.location.search);
-
-    const EVENT_MAP_KEY = "event-map";
-    const EVENT_COUNTER_KEY = "event-counter";
-
-    // Fallback to defaults immediately if sessionStorage fails to parse mid-unload
+  const trackExit = (targetPage) => {
     let savedEventMap = {};
     try {
       savedEventMap = JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
     } catch (e) {
       savedEventMap = {};
     }
-
-    let currentCounter = Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
+ 
+    let currentCounter = Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 4;
     let eventSequence;
-
+ 
     if (savedEventMap["EXIT_PAGE"] !== undefined) {
       eventSequence = savedEventMap["EXIT_PAGE"];
     } else {
       eventSequence = currentCounter;
       savedEventMap["EXIT_PAGE"] = eventSequence;
       currentCounter++;
-
-      // Safely attempt to update session storage
+ 
       try {
         sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
         sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
       } catch (e) {
-        // Do nothing, prioritize sending the event payload
+        // Fail silently to prioritize delivery execution
       }
     }
-
+ 
     const payload = {
       eventName: "EXIT_PAGE",
-      page: currentPage,
+      page: targetPage,
       eventSequence,
       eventTimestamp: new Date().toISOString(),
       customerId: "",
-      sessionId, // Ensure this variable is globally accessible in your scope
+      sessionId,
       device: {
         browser: getBrowser(),
         operatingSystem: getOperatingSystem(),
@@ -381,129 +374,51 @@ function App() {
         referrer: document.referrer || "DIRECT",
       },
     };
-
-    // FIXED: Removed the %22 encoded typo from the URL string
+ 
     navigator.sendBeacon(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-    new Blob([JSON.stringify(payload)], {
-        type: "application/json",
-      })
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events%22,
+      new Blob([JSON.stringify(payload)], { type: "application/json" })
     );
   };
-
+ 
+  // KEEP TRACK OF UPDATED CURRENT PAGE REF WITHOUT REMOUNTING LISTENERS
+  const currentPageRef = useRef(currentPage);
+  const hasTrackedExit = useRef(false);
+ 
   useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      trackExit(currentPage);
-    };
-
-    window.addEventListener("pagehide", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("pagehide", handleBeforeUnload);
-    };
+    currentPageRef.current = currentPage;
   }, [currentPage]);
-
+ 
+  // COMBINED TAB LIFE-CYCLE INTERCEPTOR
   useEffect(() => {
-    // MOBILE + DESKTOP
-    // const trackExit = () => {
-    //   const currentPage =
-    //     window.location.pathname === "/"
-    //       ? "HOME"
-    //       : window.location.pathname === "/cart"
-    //         ? "CART"
-    //         : window.location.pathname === "/checkout"
-    //           ? "CHECKOUT"
-    //           : window.location.pathname === "/order-success"
-    //             ? "ORDER_SUCCESS"
-    //             : window.location.pathname === "/locations"
-    //               ? "LOCATIONS"
-    //               : "OTHER";
-
-    //   const queryParams = new URLSearchParams(window.location.search);
-
-    //   const EVENT_MAP_KEY = "event-map";
-    //   const EVENT_COUNTER_KEY = "event-counter";
-
-    //   const savedEventMap =
-    //     JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
-
-    //   let currentCounter =
-    //     Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
-
-    //   let eventSequence;
-
-    //   // ✅ SAME LOGIC AS OTHER EVENTS
-    //   if (savedEventMap["EXIT_PAGE"] !== undefined) {
-    //     eventSequence = savedEventMap["EXIT_PAGE"];
-    //   } else {
-    //     eventSequence = currentCounter;
-
-    //     savedEventMap["EXIT_PAGE"] = eventSequence;
-
-    //     currentCounter++;
-
-    //     sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
-    //     sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
-    //   }
-
-    //   const payload = {
-    //     eventName: "EXIT_PAGE",
-    //     page: currentPage,
-    //     eventSequence,
-    //     eventTimestamp: new Date().toISOString(),
-    //     customerId: "",
-    //     sessionId,
-
-    //     device: {
-    //       browser: getBrowser(),
-    //       operatingSystem: getOperatingSystem(),
-    //       deviceType: getDeviceType(),
-    //     },
-
-    //     market: {
-    //       utmSource: queryParams.get("utm_source") || "DIRECT",
-    //       campaign: queryParams.get("utm_campaign") || "UNKNOWN",
-    //     },
-
-    //     referrer: {
-    //       url: window.location.origin + window.location.pathname,
-    //       referrer: document.referrer || "DIRECT",
-    //     },
-    //   };
-
-    //   navigator.sendBeacon(
-    //     "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-    //     new Blob([JSON.stringify(payload)], {
-    //       type: "application/json",
-    //     })
-    //   );
-    // };
-    // const handleVisibility = () => {
-    //   if (document.visibilityState === "hidden") {
-    //     trackExit();
-    //   }
-    // };
-
-    // document.addEventListener("visibilitychange", handleVisibility);
-
-    // window.addEventListener("beforeunload", trackExit);
-
-    // return () => {
-    //   document.removeEventListener("visibilitychange", handleVisibility);
-
-    //   window.removeEventListener("beforeunload", trackExit);
-    // };
-    const handleBeforeUnload = () => {
-      trackExit(currentPage);
+    const handleExitTrigger = () => {
+      if (!hasTrackedExit.current) {
+        trackExit(currentPageRef.current);
+        hasTrackedExit.current = true;
+      }
     };
-
-    window.addEventListener("pagehide", handleBeforeUnload);
-
+ 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        handleExitTrigger();
+      } else if (document.visibilityState === "visible") {
+        hasTrackedExit.current = false; // Reset if user returns to tab
+      }
+    };
+ 
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleExitTrigger);
+ 
     return () => {
-      window.removeEventListener("pagehide", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleExitTrigger);
     };
-  }, [currentPage]);
-
+  }, []);
+ 
+  // INITIAL SETUP
+  useEffect(() => {
+    sessionStorage.clear();
+  }, []);
 
   // -----------------------------------
   // CART ACTIONS
