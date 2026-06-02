@@ -333,25 +333,31 @@ function App() {
     const EVENT_MAP_KEY = "event-map";
     const EVENT_COUNTER_KEY = "event-counter";
 
-    const savedEventMap =
-      JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
+    // Fallback to defaults immediately if sessionStorage fails to parse mid-unload
+    let savedEventMap = {};
+    try {
+      savedEventMap = JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
+    } catch (e) {
+      savedEventMap = {};
+    }
 
-    let currentCounter =
-      Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
-
+    let currentCounter = Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 1;
     let eventSequence;
 
     if (savedEventMap["EXIT_PAGE"] !== undefined) {
       eventSequence = savedEventMap["EXIT_PAGE"];
     } else {
       eventSequence = currentCounter;
-
       savedEventMap["EXIT_PAGE"] = eventSequence;
-
       currentCounter++;
 
-      sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
-      sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+      // Safely attempt to update session storage
+      try {
+        sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+        sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+      } catch (e) {
+        // Do nothing, prioritize sending the event payload
+      }
     }
 
     const payload = {
@@ -360,7 +366,7 @@ function App() {
       eventSequence,
       eventTimestamp: new Date().toISOString(),
       customerId: "",
-      sessionId,
+      sessionId, // Ensure this variable is globally accessible in your scope
       device: {
         browser: getBrowser(),
         operatingSystem: getOperatingSystem(),
@@ -376,8 +382,9 @@ function App() {
       },
     };
 
+    // FIXED: Removed the %22 encoded typo from the URL string
     navigator.sendBeacon(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events%22,
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
     new Blob([JSON.stringify(payload)], {
         type: "application/json",
       })
@@ -397,8 +404,6 @@ function App() {
   }, [currentPage]);
 
   useEffect(() => {
-
-
     // MOBILE + DESKTOP
     // const trackExit = () => {
     //   const currentPage =
@@ -488,7 +493,7 @@ function App() {
 
     //   window.removeEventListener("beforeunload", trackExit);
     // };
-    const handleBeforeUnload = (e) => {
+    const handleBeforeUnload = () => {
       trackExit(currentPage);
     };
 
