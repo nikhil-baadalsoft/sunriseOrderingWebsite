@@ -77,14 +77,14 @@ const branches = [
 
 
 const Locations = () => {
-    const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");
 
   const filteredBranches = branches.filter((branch) =>
     branch.name.toLowerCase().includes(search.toLowerCase()) ||
     branch.address.toLowerCase().includes(search.toLowerCase())
   );
 
-   const getBrowser = () => {
+  const getBrowser = () => {
     const userAgent = navigator.userAgent;
 
     if (userAgent.includes("Edg"))
@@ -139,109 +139,109 @@ const Locations = () => {
 
     return "DESKTOP";
   };
-const captureEvent = async (
-  eventName,
-  eventSequence
-) => {
-  try {
+  const captureEvent = async (
+    eventName,
+    eventSequence
+  ) => {
+    try {
 
-    // WEBSITE QUERY PARAMS
+      // WEBSITE QUERY PARAMS
 
-    const queryParams =
-      new URLSearchParams(
-        window.location.search
-      );
+      const queryParams =
+        new URLSearchParams(
+          window.location.search
+        );
 
-    // GET SESSION + REFERRER DETAILS
+      // GET SESSION + REFERRER DETAILS
 
-    const sessionId =
-      queryParams.get("sessionId") ||
-      crypto.randomUUID();
+      const sessionId =
+        queryParams.get("sessionId") ||
+        crypto.randomUUID();
 
-    const refererUrl =
-      decodeURIComponent(
-        queryParams.get(
-          "refererUrl"
-        ) || window.location.href
-      );
-
-    const referrerName =
-      decodeURIComponent(
-        queryParams.get(
-          "referrerName"
-        ) || "DIRECT"
-      );
-
-    // PAYLOAD
-
-    const payload = {
-      eventName,
-      eventSequence,
-      eventTimestamp:
-        new Date().toISOString(),
-      customerId: "",
-      sessionId,
-      page: "LOCATION_ORDERING",
-      device: {
-        browser: getBrowser(),
-
-        operatingSystem:
-          getOperatingSystem(),
-
-        deviceType:
-          getDeviceType(),
-      },
-
-      // MARKETING DETAILS
-
-      market: {
-        utmSource:
+      const refererUrl =
+        decodeURIComponent(
           queryParams.get(
-            "utm_source"
-          ) || "DIRECT",
+            "refererUrl"
+          ) || window.location.href
+        );
 
-        campaign:
+      const referrerName =
+        decodeURIComponent(
           queryParams.get(
-            "utm_campaign"
-          ) || "UNKNOWN",
-      },
+            "referrerName"
+          ) || "DIRECT"
+        );
 
-      // REFERRER DETAILS
+      // PAYLOAD
 
-      referrer: {
-        url: window.location.origin + window.location.pathname,
+      const payload = {
+        eventName,
+        eventSequence,
+        eventTimestamp:
+          new Date().toISOString(),
+        customerId: "",
+        sessionId,
+        page: "LOCATION_ORDERING",
+        device: {
+          browser: getBrowser(),
 
-        referrer: refererUrl|| referrerName,
-      },
-    };
+          operatingSystem:
+            getOperatingSystem(),
 
-    console.log(
-      "EVENT PAYLOAD =>",
-      payload
-    );
-
-    // API CALL
-
-    await axios.post(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-      payload,
-      {
-        headers: {
-          "Content-Type":
-            "application/json",
+          deviceType:
+            getDeviceType(),
         },
-      }
-    );
-  } catch (error) {
-    console.log(
-      "Tracking Error =>",
-      error.message
-    );
-  }
-};
+
+        // MARKETING DETAILS
+
+        market: {
+          utmSource:
+            queryParams.get(
+              "utm_source"
+            ) || "DIRECT",
+
+          campaign:
+            queryParams.get(
+              "utm_campaign"
+            ) || "UNKNOWN",
+        },
+
+        // REFERRER DETAILS
+
+        referrer: {
+          url: window.location.origin + window.location.pathname,
+
+          referrer: refererUrl || referrerName,
+        },
+      };
+
+      console.log(
+        "EVENT PAYLOAD =>",
+        payload
+      );
+
+      // API CALL
+
+      await axios.post(
+        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
+        payload,
+        {
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.log(
+        "Tracking Error =>",
+        error.message
+      );
+    }
+  };
 
   return (
-  <div className="locationPage">
+    <div className="locationPage">
       {/* NAVBAR */}
 
       <nav className="navbar">
@@ -257,18 +257,18 @@ const captureEvent = async (
             Catering
           </button>
         </div>
-       <button
-  className="orderBtn"
-  onClick={() =>
-    (window.location.href =
-      "/locations")
-  }
->
-  Order Now
-</button>
+        <button
+          className="orderBtn"
+          onClick={() =>
+          (window.location.href =
+            "/locations")
+          }
+        >
+          Order Now
+        </button>
       </nav>
 
-    
+
 
       {/* HERO */}
 
@@ -282,7 +282,7 @@ const captureEvent = async (
             Grab our tasty bagels
             <br />
             near you
-          </h1> 
+          </h1>
 
           <p>
             Search your nearest Sunrise Bagels branch
@@ -298,10 +298,10 @@ const captureEvent = async (
               className="searchInput"
             />
 
-            <button style={{backgroundColor: "white", color: "black"}}>Search</button>
+            <button style={{ backgroundColor: "white", color: "black" }}>Search</button>
           </div>
         </div>
-        <img src="https://ebcatering.com/usercontent/product_sub_img/ed9e3f7c-c201-1ad5-79719fa1355f4d58.png" alt="Hero banner"  style={{ maxWidth: "100%", height: "auto", borderRadius: "16px" }}/>
+        <img src="https://ebcatering.com/usercontent/product_sub_img/ed9e3f7c-c201-1ad5-79719fa1355f4d58.png" alt="Hero banner" style={{ maxWidth: "100%", height: "auto", borderRadius: "16px" }} />
       </section>
 
       {/* RESULT SECTION */}
@@ -340,49 +340,46 @@ const captureEvent = async (
               </p>
 
               <div className="branchBtns">
-                
- <button
-  className="primaryBtn"
-  onClick={async () => {
-    await captureEvent("ORDER_NOW",3);
 
-    // GET CURRENT URL PARAMS
-    const existingQuery =
-      new URLSearchParams(
-        window.location.search
-      );
+                <button
+                  className="primaryBtn"
+                  onClick={async () => {
+                    await captureEvent("ORDER_NOW", 3);
 
-    // GET EXISTING SESSION ID
-    const sessionId =
-      existingQuery.get("sessionId") ||
-      crypto.randomUUID();
+                    // GET CURRENT URL PARAMS
+                    const existingQuery =
+                      new URLSearchParams(
+                        window.location.search
+                      );
 
-    // BUILD NEXT URL PARAMS
-    const params =
-      new URLSearchParams({
-        branchId: branch.id,
-        branchName: branch.name,
-        branchAddress: branch.address,
-        branchPhone: branch.phone,
-        sessionId,
-      });
+                    // GET EXISTING SESSION ID
+                    const sessionId =
+                      existingQuery.get("sessionId") ||
+                      crypto.randomUUID();
 
-    // OPEN ORDERING WEBSITE
-    window.location.href = `/?${params.toString()}`;
+                    // BUILD NEXT URL PARAMS
+                    const params =
+                      new URLSearchParams({
+                        branchId: branch.id,
+                        branchName: branch.name,
+                        branchAddress: branch.address,
+                        branchPhone: branch.phone,
+                        sessionId,
+                      });
 
-  }}
->
-  Order now
-</button>
+                    // OPEN ORDERING WEBSITE
+                    window.location.href = `/?${params.toString()}`;
 
-{/* <button className="primaryBtn" onClick={() => window.open("https://sunrise-catering.vercel.app/", "_blank")}>
-  Order Catering
-</button> */}
-                
-              </div>
-              <button className="secondaryBtn">
+                  }}
+                >
+                  Order now
+                </button>
+                <button className="secondaryBtn">
                   Get directions
                 </button>
+
+              </div>
+
             </div>
           ))}
         </div>

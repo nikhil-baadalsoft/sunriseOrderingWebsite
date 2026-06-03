@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -376,7 +376,7 @@ function App() {
     };
  
     navigator.sendBeacon(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events%22,
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
       new Blob([JSON.stringify(payload)], { type: "application/json" })
     );
   };
