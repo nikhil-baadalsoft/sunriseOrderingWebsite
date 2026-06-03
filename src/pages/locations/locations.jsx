@@ -375,9 +375,9 @@ const captureEvent = async (
   Order now
 </button>
 
-<button className="primaryBtn" onClick={() => window.open("https://sunrise-catering.vercel.app/", "_blank")}>
+{/* <button className="primaryBtn" onClick={() => window.open("https://sunrise-catering.vercel.app/", "_blank")}>
   Order Catering
-</button>
+</button> */}
                 
               </div>
               <button className="secondaryBtn">
