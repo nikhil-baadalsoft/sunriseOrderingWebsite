@@ -1,104 +1,102 @@
-/* App.css */
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Inter, sans-serif;
 }
-
+ 
 html,
 body,
 #root {
   width: 100%;
   min-height: 100vh;
 }
-
+ 
 body {
   background: #f8f7f5;
   overflow-x: hidden;
 }
-
+ 
 button,
 input,
 textarea {
   font-family: Inter, sans-serif;
 }
-
+ 
 button {
   cursor: pointer;
 }
-
+ 
 .app {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
 }
-
+ 
 /* =========================================
    SIDEBAR
 ========================================= */
 /* =========================
    NAVBAR
 ========================= */
-
+ 
 .navbar {
   width: 100%;
   height: 84px;
-
+ 
   background: white;
-
+ 
   border-bottom: 1px solid #ececec;
-
+ 
   padding: 0 34px;
-
+ 
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+ 
   position: sticky;
   top: 0;
   z-index: 1000;
 }
-
+ 
 /* =========================
    BRAND
 ========================= */
-
+ 
 .brandWrapper {
   display: flex;
   align-items: center;
   gap: 14px;
-
+ 
   cursor: pointer;
 }
-
+ 
 .logoIcon {
   width: 52px;
   height: 52px;
-
+ 
   border-radius: 16px;
-
+ 
   background: linear-gradient(
     135deg,
     #ff7a00,
     #ff5a00
   );
-
+ 
   display: flex;
   align-items: center;
   justify-content: center;
-
+ 
   color: white;
-
+ 
   font-size: 24px;
   font-weight: 700;
-
+ 
   box-shadow: 0 10px 24px
     rgba(255, 90, 0, 0.18);
 }
-
+ 
 .logoText {
   margin-top: 50px;
   color: #ff5a00;
@@ -106,79 +104,79 @@ button {
   font-weight: 700;
   letter-spacing: 1px;
 }
-
+ 
 .brand {
   font-size: 15px;
   color: #111;
   font-weight: 700;
-
+ 
 }
-
+ 
 /* =========================
    CART BUTTON
 ========================= */
-
+ 
 .cartIconBtn {
   width: 58px;
   height: 58px;
-
+ 
   border: none;
-
+ 
   background: #ff5a00;
   color: white;
-
+ 
   border-radius: 18px;
-
+ 
   display: flex;
   align-items: center;
   justify-content: center;
-
+ 
   position: relative;
-
+ 
   cursor: pointer;
-
+ 
   transition: 0.25s ease;
 }
-
+ 
 .cartIconBtn:hover {
   transform: translateY(-2px);
-
+ 
   box-shadow: 0 10px 20px
     rgba(255, 90, 0, 0.25);
 }
-
+ 
 .activeCart {
   background: #e24f00;
 }
-
+ 
 /* =========================
    CART BADGE
 ========================= */
-
+ 
 .cartBadge {
   position: absolute;
-
+ 
   top: -6px;
   right: -6px;
-
+ 
   min-width: 22px;
   height: 22px;
-
+ 
   border-radius: 999px;
-
+ 
   background: #111;
   color: white;
-
+ 
   display: flex;
   align-items: center;
   justify-content: center;
-
+ 
   font-size: 12px;
   font-weight: 700;
-
+ 
   padding: 0 6px;
 }
-
+ 
 .logoText {
   color: #ff5a00;
   font-weight: 700;
@@ -186,20 +184,20 @@ button {
   letter-spacing: 1px;
   margin-bottom: 6px;
 }
-
+ 
 .brand {
   font-size: 35px;
   font-weight: 700;
   color: #111;
   margin-bottom: 46px;
 }
-
+ 
 .navLinks {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
+ 
 .navBtn {
   border: none;
   background: transparent;
@@ -211,22 +209,22 @@ button {
   transition: 0.25s ease;
   color: #555;
   font-weight: 500;
-
+ 
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
+ 
 .navBtn:hover {
   background: #f3ebe4;
 }
-
+ 
 .navBtn.active {
   background: #f7eadf;
   color: #d65300;
   font-weight: 600;
 }
-
+ 
 .cartBadge {
   background: #ffeddc;
   color: #ff5a00;
@@ -239,26 +237,26 @@ button {
   justify-content: center;
   font-weight: 700;
 }
-
+ 
 .footerText {
   color: #8d8d8d;
   font-size: 13px;
 }
-
+ 
 /* =========================================
    CONTENT
 ========================================= */
-
+ 
 .content {
   flex: 1;
   width: 100%;
   overflow-x: hidden;
 }
-
+ 
 /* =========================================
    HERO SECTION
 ========================================= */
-
+ 
 .heroSection {
   position: relative;
   background: linear-gradient(90deg, #db4b00, #ff6a00);
@@ -266,34 +264,34 @@ button {
   padding: 72px 70px;
   overflow: hidden;
 }
-
+ 
 .heroOverlay {
   position: absolute;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.12);
 }
-
+ 
 .heroOverlay.top {
   width: 240px;
   height: 240px;
   top: -70px;
   right: -60px;
 }
-
+ 
 .heroOverlay.bottom {
   width: 220px;
   height: 220px;
   bottom: -120px;
   left: 58%;
 }
-
+ 
 .heroSub {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 2px;
   margin-bottom: 18px;
 }
-
+ 
 .heroTitle {
   max-width: 820px;
   font-size: 58px;
@@ -301,7 +299,7 @@ button {
   font-weight: 700;
   margin-bottom: 24px;
 }
-
+ 
 .heroDesc {
   max-width: 640px;
   font-size: 18px;
@@ -309,13 +307,13 @@ button {
   margin-bottom: 36px;
   color: rgba(255, 255, 255, 0.92);
 }
-
+ 
 .heroBtns {
   display: flex;
   align-items: center;
   gap: 16px;
 }
-
+ 
 .exploreBtn,
 .cartBtn {
   padding: 14px 28px;
@@ -324,33 +322,33 @@ button {
   font-weight: 600;
   transition: 0.25s ease;
 }
-
+ 
 .exploreBtn {
   background: white;
   color: #db4b00;
   border: none;
 }
-
+ 
 .cartBtn {
   background: transparent;
   border: 1.5px solid white;
   color: white;
 }
-
+ 
 .exploreBtn:hover,
 .cartBtn:hover {
   transform: translateY(-2px);
   opacity: 0.96;
 }
-
+ 
 /* =========================================
    MENU SECTION
 ========================================= */
-
+ 
 .menuSection {
   padding: 42px;
 }
-
+ 
 .menuSub {
   color: #ff5a00;
   font-size: 13px;
@@ -358,27 +356,27 @@ button {
   letter-spacing: 1px;
   margin-bottom: 10px;
 }
-
+ 
 .menuTitle {
   font-size: 42px;
   font-weight: 700;
   color: #111;
   margin-bottom: 12px;
 }
-
+ 
 .menuDesc {
   font-size: 16px;
   color: #666;
   margin-bottom: 34px;
   line-height: 1.7;
 }
-
+ 
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   gap: 24px;
 }
-
+ 
 .card {
   background: white;
   border-radius: 18px;
@@ -386,22 +384,22 @@ button {
   border: 1px solid #efefef;
   transition: 0.25s ease;
 }
-
+ 
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
-
+ 
 .card img {
   width: 100%;
   height: 220px;
   object-fit: cover;
 }
-
+ 
 .cardContent {
   padding: 20px;
 }
-
+ 
 .cardTop {
   display: flex;
   justify-content: space-between;
@@ -409,13 +407,13 @@ button {
   margin-bottom: 22px;
   gap: 12px;
 }
-
+ 
 .cardTop h3 {
   font-size: 22px;
   font-weight: 600;
   color: #111;
 }
-
+ 
 .cardTop span {
   background: #fff1e8;
   color: #ff5a00;
@@ -425,7 +423,7 @@ button {
   font-weight: 600;
   white-space: nowrap;
 }
-
+ 
 .card button {
   width: 100%;
   border: none;
@@ -437,47 +435,47 @@ button {
   font-weight: 600;
   transition: 0.25s ease;
 }
-
+ 
 .card button:hover {
   opacity: 0.96;
   transform: translateY(-1px);
 }
-
+ 
 /* =========================================
    CART PAGE
 ========================================= */
-
+ 
 .cartPage {
   padding: 42px;
 }
-
+ 
 .cartTitle {
   font-size: 48px;
   font-weight: 700;
   margin-bottom: 10px;
   color: #111;
 }
-
+ 
 .cartDesc {
   color: #666;
   margin-bottom: 42px;
   font-size: 17px;
   line-height: 1.6;
 }
-
+ 
 .cartLayout {
   display: grid;
   grid-template-columns: 1fr 420px;
   gap: 36px;
   align-items: start;
 }
-
+ 
 .cartItems {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
-
+ 
 .cartItem {
   background: white;
   border: 1px solid #ececec;
@@ -487,38 +485,38 @@ button {
   justify-content: space-between;
   gap: 18px;
 }
-
+ 
 .cartLeft {
   display: flex;
   gap: 18px;
 }
-
+ 
 .cartLeft img {
   width: 115px;
   height: 105px;
   object-fit: cover;
   border-radius: 14px;
 }
-
+ 
 .cartLeft h3 {
   font-size: 28px;
   color: #111;
   margin-bottom: 10px;
 }
-
+ 
 .cartLeft p {
   color: #ff5a00;
   font-size: 16px;
   font-weight: 600;
 }
-
+ 
 .cartRight {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: space-between;
 }
-
+ 
 .quantityBox {
   display: flex;
   align-items: center;
@@ -527,7 +525,7 @@ button {
   border-radius: 14px;
   padding: 12px 18px;
 }
-
+ 
 .quantityBox button {
   border: none;
   background: transparent;
@@ -535,17 +533,17 @@ button {
   font-weight: 600;
   color: #444;
 }
-
+ 
 .quantityBox span {
   font-size: 18px;
   font-weight: 600;
 }
-
+ 
 .cartRight h3 {
   font-size: 18px;
   color: #111;
 }
-
+ 
 .removeBtn {
   border: none;
   background: transparent;
@@ -553,7 +551,7 @@ button {
   font-size: 15px;
   font-weight: 500;
 }
-
+ 
 .subtotal {
   margin-top: 28px;
   text-align: right;
@@ -561,11 +559,11 @@ button {
   font-weight: 700;
   color: #111;
 }
-
+ 
 /* =========================================
    DELIVERY CARD
 ========================================= */
-
+ 
 .deliveryCard {
   background: white;
   border: 1px solid #ececec;
@@ -574,27 +572,27 @@ button {
   position: sticky;
   top: 20px;
 }
-
+ 
 .deliveryCard h2 {
   font-size: 38px;
   margin-bottom: 10px;
   color: #111;
 }
-
+ 
 .deliveryCard p {
   color: #777;
   margin-bottom: 24px;
   line-height: 1.5;
 }
-
+ 
 /* =========================
    INPUT GROUP
 ========================= */
-
+ 
 .inputGroup {
   margin-bottom: 22px;
 }
-
+ 
 .inputGroup label {
   display: block;
   margin-bottom: 10px;
@@ -602,7 +600,7 @@ button {
   font-weight: 600;
   color: #222;
 }
-
+ 
 .inputGroup input,
 .inputGroup textarea,
 .modalDropdown {
@@ -615,24 +613,24 @@ button {
   transition: 0.25s ease;
   background: #fff;
 }
-
+ 
 .inputGroup input:focus,
 .inputGroup textarea:focus,
 .modalDropdown:focus {
   border-color: #ff5a00;
   box-shadow: 0 0 0 4px rgba(255, 90, 0, 0.08);
 }
-
+ 
 /* =========================
    PICKUP TYPE
 ========================= */
-
+ 
 .pickupType {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
+ 
 .pickupActive {
   border: none;
   background: #ff5a00;
@@ -643,31 +641,31 @@ button {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
-
+ 
 /* =========================
    STORE INFO
 ========================= */
-
+ 
 .storeInfoBox {
   background: #fff7f2;
   border: 1px solid #ffd7c2;
   border-radius: 18px;
   padding: 18px;
 }
-
+ 
 .storeInfoBox h3 {
   font-size: 19px;
   color: #111;
   margin-bottom: 10px;
 }
-
+ 
 .storeInfoBox p {
   color: #555;
   font-size: 14px;
   line-height: 1.7;
   margin-bottom: 12px;
 }
-
+ 
 .storeInfoBox span {
   display: block;
   color: #ff5a00;
@@ -675,16 +673,16 @@ button {
   margin-bottom: 8px;
   font-size: 14px;
 }
-
+ 
 .storeInfoBox small {
   color: #777;
   font-size: 13px;
 }
-
+ 
 /* =========================
    SESSION
 ========================= */
-
+ 
 .sessionId {
   font-size: 12px;
   color: #999;
@@ -692,11 +690,11 @@ button {
   margin-bottom: 24px;
   word-break: break-word;
 }
-
+ 
 /* =========================
    BUTTONS
 ========================= */
-
+ 
 .paymentBtn {
   width: 100%;
   border: none;
@@ -710,12 +708,12 @@ button {
   transition: 0.25s ease;
   margin-bottom: 14px;
 }
-
+ 
 .paymentBtn:hover {
   transform: translateY(-1px);
   opacity: 0.95;
 }
-
+ 
 .shoppingBtn {
   width: 100%;
   border: 1px solid #e4e4e4;
@@ -729,21 +727,21 @@ button {
   transition: 0.25s ease;
   margin-bottom: 14px;
 }
-
+ 
 .shoppingBtn:hover {
   background: #fafafa;
 }
-
+ 
 /* =========================
    RESPONSIVE
 ========================= */
-
-
-
+ 
+ 
+ 
 /* =========================================
    EMPTY CART
 ========================================= */
-
+ 
 .emptyCart {
   max-width: 420px;
   margin: 80px auto;
@@ -753,12 +751,12 @@ button {
   padding: 48px;
   text-align: center;
 }
-
+ 
 .emptyCart p {
   color: #666;
   font-size: 15px;
 }
-
+ 
 .emptyCart button {
   margin-top: 20px;
   border: none;
@@ -769,11 +767,11 @@ button {
   font-size: 15px;
   font-weight: 600;
 }
-
+ 
 /* =========================
    MODALS
 ========================= */
-
+ 
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -783,8 +781,10 @@ button {
   align-items: center;
   justify-content: center;
   padding: 20px;
+ 
+ 
 }
-
+ 
 .pickupModal {
   width: 100%;
   max-width: 560px;
@@ -792,27 +792,28 @@ button {
   border-radius: 18px;
   overflow: hidden;
   animation: popup 0.25s ease;
+ 
 }
-
+ 
 @keyframes popup {
   from {
     transform: scale(0.92);
     opacity: 0;
   }
-
+ 
   to {
     transform: scale(1);
     opacity: 1;
   }
 }
-
+ 
 .pickupModal h2 {
   padding: 26px 28px;
   font-size: 30px;
   color: #111;
   border-bottom: 1px solid #ececec;
 }
-
+ 
 .pickupSelect {
   width: fit-content;
   margin: 24px auto 18px;
@@ -824,7 +825,7 @@ button {
   color: #4a2a00;
   background: #fffaf1;
 }
-
+ 
 .pickupInfo {
   margin: 0 24px;
   background: #f5ede4;
@@ -834,38 +835,38 @@ button {
   border-radius: 10px;
   font-size: 15px;
 }
-
+ 
 .storeDetails {
   padding: 28px;
   text-align: center;
 }
-
+ 
 .storeDetails h3 {
   font-size: 32px;
   color: #1f1f1f;
   margin-bottom: 14px;
 }
-
+ 
 .storeDetails p {
   color: #666;
   line-height: 1.8;
   font-size: 16px;
 }
-
+ 
 .pickupQuestion {
   text-align: center;
   margin-bottom: 24px;
   font-size: 22px;
   color: #111;
 }
-
+ 
 .pickupBtns {
   display: flex;
   justify-content: center;
   gap: 18px;
   padding-bottom: 34px;
 }
-
+ 
 .asapBtn,
 .laterBtn,
 .browseMenuBtn {
@@ -877,26 +878,26 @@ button {
   cursor: pointer;
   transition: 0.25s ease;
 }
-
+ 
 .asapBtn {
   background: #ffbf00;
   color: #5d4200;
 }
-
+ 
 .laterBtn,
 .browseMenuBtn {
   background: #ffbf00;
   color: #3f2a00;
 }
-
+ 
 .asapBtn:hover,
 .laterBtn:hover,
 .browseMenuBtn:hover {
   transform: translateY(-2px);
 }
-
-
-
+ 
+ 
+ 
 .modalDropdown {
   width: 100%;
   margin-top: 10px;
@@ -909,79 +910,89 @@ button {
   background: white;
   transition: 0.25s ease;
 }
-
+ 
 .modalDropdown:focus {
   border-color: #ff5a00;
   box-shadow: 0 0 0 4px rgba(255, 90, 0, 0.08);
 }
-
+ 
 .browseMenuBtn {
   display: block;
   margin: 30px auto 34px;
 }
-
+ 
 /* =========================
    SUGGESTION MODAL
 ========================= */
-
+ 
 .suggestionModal {
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   background: white;
   border-radius: 22px;
   overflow: hidden;
   animation: popup 0.25s ease;
+  margin-top: 90px;
+  position: relative;
 }
-
+ 
 .suggestionTitle {
   font-size: 34px;
   font-weight: 700;
   color: #111;
   padding: 32px 32px 10px;
 }
-
+ 
 .suggestionDesc {
   color: #666;
   padding: 0 32px 24px;
   font-size: 15px;
 }
-
+ 
 .suggestionGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
   padding: 0 32px 32px;
 }
-
+ 
 .suggestionCard {
   border: 1px solid #ececec;
   border-radius: 18px;
   overflow: hidden;
   background: #fff;
+ 
 }
-
+ 
 .suggestionCard img {
   width: 100%;
   height: 180px;
   object-fit: cover;
 }
-
+ 
 .suggestionContent {
   padding: 18px;
+   display: flex;
+  flex-direction: column;
+  flex: 1;
+ 
 }
-
+.suggestionInfo {
+ flex: 1;
+}
+ 
 .suggestionContent h3 {
   font-size: 20px;
   margin-bottom: 10px;
   color: #111;
 }
-
+ 
 .suggestionContent p {
   color: #ff6a00;
   font-weight: 700;
   margin-bottom: 18px;
 }
-
+ 
 .suggestionContent button {
   width: 100%;
   border: none;
@@ -992,19 +1003,19 @@ button {
   font-weight: 700;
   cursor: pointer;
 }
-
+ 
 .suggestionDivider {
   width: 100%;
   height: 1px;
   background: #ececec;
 }
-
+ 
 .suggestionFooter {
   display: flex;
   justify-content: flex-end;
   padding: 24px 32px;
 }
-
+ 
 .proceedBtn {
   border: none;
   background: #111;
@@ -1015,29 +1026,55 @@ button {
   cursor: pointer;
   transition: 0.25s ease;
 }
-
+ 
 .proceedBtn:hover {
   opacity: 0.92;
 }
-
-
+.closeSuggestionBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+ 
+.closeSuggestionBtn:hover {
+  background: #e5e7eb;
+  transform: scale(1.05);
+}
+ 
+.closeSuggestionBtn:active {
+  transform: scale(0.95);
+}
+ 
 /* =========================
    ORDER SUCCESS MODAL
 ========================= */
-
+ 
 .orderModalOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
   z-index: 9999;
-
+ 
   display: flex;
   align-items: center;
   justify-content: center;
-
+ 
   padding: 20px;
 }
-
+ 
 .orderModal {
   width: 100%;
   max-width: 520px;
@@ -1047,274 +1084,274 @@ button {
   position: relative;
   animation: popup 0.25s ease;
 }
-
+ 
 @keyframes popup {
   from {
     transform: scale(0.94);
     opacity: 0;
   }
-
+ 
   to {
     transform: scale(1);
     opacity: 1;
   }
 }
-
+ 
 .closeModalBtn {
   position: absolute;
   top: 18px;
   right: 18px;
-
+ 
   border: none;
   background: #f4f4f4;
-
+ 
   width: 36px;
   height: 36px;
-
+ 
   border-radius: 50%;
-
+ 
   cursor: pointer;
-
+ 
   font-size: 22px;
 }
-
+ 
 .successIcon {
   width: 80px;
   height: 80px;
-
+ 
   background: #ffefe4;
   color: #ff5a00;
-
+ 
   border-radius: 50%;
-
+ 
   display: flex;
   align-items: center;
   justify-content: center;
-
+ 
   font-size: 40px;
   font-weight: 700;
-
+ 
   margin-bottom: 26px;
 }
-
+ 
 .orderModal h2 {
   font-size: 38px;
   color: #111;
   margin-bottom: 14px;
 }
-
+ 
 .orderModal p {
   color: #666;
   line-height: 1.7;
 }
-
+ 
 .orderStoreInfo {
   margin-top: 24px;
-
+ 
   background: #fff7f2;
-
+ 
   border: 1px solid #ffd7c2;
-
+ 
   border-radius: 18px;
-
+ 
   padding: 18px;
 }
-
+ 
 .orderStoreInfo h3 {
   margin-bottom: 10px;
   color: #111;
 }
-
+ 
 .orderStoreInfo span {
   color: #666;
   line-height: 1.6;
 }
-
+ 
 .orderTotal {
   margin-top: 24px;
   font-size: 22px;
   font-weight: 700;
   color: #111;
 }
-
+ 
 .doneBtn {
   width: 100%;
   margin-top: 30px;
-
+ 
   border: none;
-
+ 
   background: #ff5a00;
   color: white;
-
+ 
   padding: 16px;
-
+ 
   border-radius: 14px;
-
+ 
   font-size: 16px;
   font-weight: 700;
-
+ 
   cursor: pointer;
 }
-
+ 
 /* =========================
    MOBILE
 ========================= */
-
+ 
 @media (max-width: 700px) {
-
+ 
   .suggestionModal {
     max-width: 95%;
   }
-
+ 
   .suggestionTitle {
     font-size: 28px;
   }
-
+ 
   .suggestionGrid {
     grid-template-columns: 1fr;
     padding: 0 20px 24px;
   }
-
+ 
   .suggestionFooter {
     padding: 20px;
   }
-
+ 
   .proceedBtn {
     width: 100%;
   }
 }
-
+ 
 /* =========================
    RESPONSIVE
 ========================= */
-
+ 
 @media (max-width: 600px) {
   .pickupModal h2 {
     font-size: 24px;
   }
-
+ 
   .storeDetails h3 {
     font-size: 24px;
   }
-
+ 
   .pickupBtns {
     flex-direction: column;
     padding: 0 24px 28px;
   }
-
+ 
   .asapBtn,
   .laterBtn,
   .browseMenuBtn {
     width: 100%;
   }
-
+ 
   .modalDropdown {
     width: calc(100% - 40px);
     margin: 18px 20px 0;
   }
 }
-
+ 
 /* =========================================
    RESPONSIVE
 ========================================= */
-
+ 
 @media (max-width: 1200px) {
   .cartLayout {
     grid-template-columns: 1fr;
   }
-
+ 
   .deliveryCard {
     position: static;
   }
 }
-
+ 
 @media (max-width: 900px) {
   .app {
     flex-direction: column;
   }
-
+ 
   .sidebar {
     width: 100%;
     min-width: 100%;
     border-right: none;
     border-bottom: 1px solid #ececec;
   }
-
+ 
   .heroSection {
     padding: 50px 28px;
   }
-
+ 
   .heroTitle {
     font-size: 42px;
   }
-
+ 
   .heroDesc {
     font-size: 16px;
   }
-
+ 
   .menuSection,
   .cartPage {
     padding: 28px;
   }
-
+ 
   .menuTitle,
   .cartTitle {
     font-size: 34px;
   }
-
+ 
   .cardGrid {
     grid-template-columns: 1fr;
   }
-
+ 
   .cartItem {
     flex-direction: column;
   }
-
+ 
   .cartRight {
     width: 100%;
     align-items: flex-start;
     gap: 14px;
   }
 }
-
+ 
 @media (max-width: 600px) {
   .heroTitle {
     font-size: 34px;
   }
-
+ 
   .heroBtns {
     flex-direction: column;
     align-items: flex-start;
   }
-
+ 
   .exploreBtn,
   .cartBtn {
     width: 100%;
   }
-
+ 
   .card img {
     height: 200px;
   }
-
+ 
   .cartLeft {
     flex-direction: column;
   }
-
+ 
   .cartLeft img {
     width: 100%;
     height: 220px;
   }
-
+ 
   .deliveryCard h2 {
     font-size: 28px;
   }
 }
-
+ 
 @media (max-width: 900px) {
   .deliveryCard {
     position: static;
   }
-
+ 
   .deliveryCard h2 {
     font-size: 30px;
   }
