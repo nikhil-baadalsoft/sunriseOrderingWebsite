@@ -18,6 +18,8 @@ function Checkout({
       cvv: "",
     });
 
+
+
   const handlePayment = async () => {
     if (
       !paymentDetails.cardName ||
@@ -27,7 +29,8 @@ function Checkout({
     ) {
       return;
     }
-
+    // await updateCartStatus()
+  
     await captureEvent(
       "PAYMENT_SUBMITTED"
     );
