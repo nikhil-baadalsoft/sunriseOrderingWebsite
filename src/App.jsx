@@ -305,7 +305,7 @@
 //       },
 //     };
 //     console.log("EVENT PAYLOAD =>", payload);
-  
+
 //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events"
 //     await axios.post(url, payload);
 
@@ -1003,13 +1003,15 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom"; 
+ 
 
 import "react-toastify/dist/ReactToastify.css";
 import Locations from "./pages/locations/locations";
 import Checkout from "./pages/checkout/checkout";
 import OrderSuccess from "./pages/order-success/orderSuccess";
 import "./App.css";
+import Login from "./pages/login/login";
 
 const menuItems = [
   {
@@ -1080,7 +1082,7 @@ const menuItems = [
     price: 8.79,
     description: "Plain Bagel with fresh avocado, topped with our Everything Spice Mix. (400 calories)",
     image: "https://ebcatering.com/usercontent/product_sub_img/AvocadoToast.jpg"
- 
+
   },
   {
     id: "10",
@@ -1144,15 +1146,15 @@ const menuItems = [
     price: 14.39,
     description: "Fresh baked Gourmet bagels without the shmear.",
     image: "https://ebcatering.com/usercontent/product_sub_img/HalfDozenGourmetBagels.jpg"
-  }  ,
- 
+  },
+
   {
     id: "19",
     name: "Coffee or Cold Brew for the Group",
     price: 19.99,
     image: "https://ebcatering.com/usercontent/product_sub_img/HotCoffeeColdBrew_708x531.jpg"
   },
-   {
+  {
     id: "20",
     name: "Orange Juice, Lemonade or Tea Lemonade For the Group",
     price: 15.49,
@@ -1164,7 +1166,7 @@ const menuItems = [
     price: 15.49,
     image: "https://ebcatering.com/usercontent/product_sub_img/Hot&IcedTea_708x531.jpg"
   },
-   {
+  {
     id: "22",
     name: "Individual Bottled Beverages",
     price: 2.99,
@@ -1240,7 +1242,7 @@ const menuItems = [
     description: "Re-energize your group with this snack break including coffee and sweets all perfectly packaged for your group.",
     image: "https://ebcatering.com/usercontent/product_sub_img/SweetsCoffeeBreak_708x531.jpg"
   },
-   {
+  {
     id: "33",
     name: "Cinnamon Bliss Roll 4-Pack",
     price: 16.49,
@@ -1274,7 +1276,9 @@ function App() {
 
   const [showSuggestionModal, setShowSuggestionModal] = useState(false);
 
-   const [suggestedItems, setSuggestedItems] = useState([]);
+  const [suggestedItems, setSuggestedItems] = useState([]);
+
+  const userNameExists = sessionStorage.getItem("username");
 
   const currentPage =
     window.location.pathname === "/"
@@ -1329,50 +1333,50 @@ function App() {
   // SUGGESTED ITEMS
   // -----------------------------------
 
-const beverageItems = menuItems.filter((item) => {
-  const name = item.name.toLowerCase();
- 
-  return (
-    name.includes("beverage") ||
-    name.includes("coffee") ||
-    name.includes("tea") ||
-    name.includes("juice") ||
-    name.includes("lemonade")
-  );
-});
- 
-const sweetItems = menuItems.filter((item) => {
-  const name = item.name.toLowerCase();
- 
-  return (
-    name.includes("sweet") ||
-    name.includes("cookie") ||
-    name.includes("pastr") ||
-    name.includes("cinnamon")
-  );
-});
- 
-const mealItems = menuItems.filter((item) => {
-  const name = item.name.toLowerCase();
- 
-  return (
-    name.includes("meal") ||
-    name.includes("breakfast") ||
-    name.includes("lunch") ||
-    name.includes("sandwich")
-  );
-});
- 
-const randomItem = (items) =>
-  items[Math.floor(Math.random() * items.length)];
- 
-const generateSuggestions = () => {
-  const beverage = randomItem(beverageItems);
-  const sweet = randomItem(sweetItems);
-  const meal = randomItem(mealItems);
- 
-  return [beverage, sweet, meal].filter(Boolean);
-};
+  const beverageItems = menuItems.filter((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      name.includes("beverage") ||
+      name.includes("coffee") ||
+      name.includes("tea") ||
+      name.includes("juice") ||
+      name.includes("lemonade")
+    );
+  });
+
+  const sweetItems = menuItems.filter((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      name.includes("sweet") ||
+      name.includes("cookie") ||
+      name.includes("pastr") ||
+      name.includes("cinnamon")
+    );
+  });
+
+  const mealItems = menuItems.filter((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      name.includes("meal") ||
+      name.includes("breakfast") ||
+      name.includes("lunch") ||
+      name.includes("sandwich")
+    );
+  });
+
+  const randomItem = (items) =>
+    items[Math.floor(Math.random() * items.length)];
+
+  const generateSuggestions = () => {
+    const beverage = randomItem(beverageItems);
+    const sweet = randomItem(sweetItems);
+    const meal = randomItem(mealItems);
+
+    return [beverage, sweet, meal].filter(Boolean);
+  };
 
   // -----------------------------------
   // DELIVERY DETAILS
@@ -1553,19 +1557,19 @@ const generateSuggestions = () => {
   // INITIAL SETUP
   // -----------------------------------
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    // CLEAR OLD SESSION DATA ON EVERY LOAD
-    // ENSURES COUNTER ALWAYS STARTS FRESH
-    // PREVENTS STALE DATA FROM PREVIOUS TEST RUNS
+  //   // CLEAR OLD SESSION DATA ON EVERY LOAD
+  //   // ENSURES COUNTER ALWAYS STARTS FRESH
+  //   // PREVENTS STALE DATA FROM PREVIOUS TEST RUNS
 
-    sessionStorage.clear();
+  //   sessionStorage.clear();
 
-    // NO customerId — NO LOGIN SYSTEM
-    // NO COUNTER INIT — DEFAULT 4 HANDLED
-    // INSIDE captureEvent VIA || 4
+  //   // NO customerId — NO LOGIN SYSTEM
+  //   // NO COUNTER INIT — DEFAULT 4 HANDLED
+  //   // INSIDE captureEvent VIA || 4
 
-  }, []);
+  // }, []);
 
   // -----------------------------------
   // EXIT TRACKING
@@ -1577,17 +1581,17 @@ const generateSuggestions = () => {
     } catch (e) {
       savedEventMap = {};
     }
- 
+
     let currentCounter = Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 4;
     let eventSequence;
- 
+
     if (savedEventMap["EXIT_PAGE"] !== undefined) {
       eventSequence = savedEventMap["EXIT_PAGE"];
     } else {
       eventSequence = currentCounter;
       savedEventMap["EXIT_PAGE"] = eventSequence;
       currentCounter++;
- 
+
       try {
         sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
         sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
@@ -1595,7 +1599,7 @@ const generateSuggestions = () => {
         // Fail silently to prioritize delivery execution
       }
     }
- 
+
     const payload = {
       eventName: "EXIT_PAGE",
       page: targetPage,
@@ -1617,21 +1621,21 @@ const generateSuggestions = () => {
         referrer: document.referrer || "DIRECT",
       },
     };
- 
+
     navigator.sendBeacon(
       "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
       new Blob([JSON.stringify(payload)], { type: "application/json" })
     );
   };
- 
+
   // KEEP TRACK OF UPDATED CURRENT PAGE REF WITHOUT REMOUNTING LISTENERS
   const currentPageRef = useRef(currentPage);
   const hasTrackedExit = useRef(false);
- 
+
   useEffect(() => {
     currentPageRef.current = currentPage;
   }, [currentPage]);
- 
+
   // COMBINED TAB LIFE-CYCLE INTERCEPTOR
   useEffect(() => {
     const handleExitTrigger = () => {
@@ -1640,7 +1644,7 @@ const generateSuggestions = () => {
         hasTrackedExit.current = true;
       }
     };
- 
+
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
         handleExitTrigger();
@@ -1648,38 +1652,68 @@ const generateSuggestions = () => {
         hasTrackedExit.current = false; // Reset if user returns to tab
       }
     };
- 
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("pagehide", handleExitTrigger);
- 
+
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("pagehide", handleExitTrigger);
     };
   }, []);
- 
+
   // INITIAL SETUP
-  useEffect(() => {
-    sessionStorage.clear();
-  }, []);
+  // useEffect(() => {
+  //   sessionStorage.clear();
+  // }, []);
 
   // -----------------------------------
   // CART ACTIONS
   // -----------------------------------
 
   const addToCart = async (item) => {
-    const existingItem = cart.find((cartItem) => cartItem.id === item.id);
+    console.log("ITEM", item)
+    const existingItem = cart.find((cartItem) => cartItem.itemId === item.id);
 
     if (existingItem) {
       const updatedCart = cart.map((cartItem) =>
-        cartItem.id === item.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem,
+        cartItem.itemId === item.id
+          ? {
+            ...cartItem,
+            quantity: cartItem.quantity + 1,
+            subtotal: (cartItem.quantity + 1) * cartItem.price,
+          }
+          : cartItem
       );
-
+      const Payload = {
+        userName: sessionStorage.getItem("username"),
+        itemId: item.id,
+        quantityIncrement: 1
+      }
+      const url = ""
+      const response = await axios.post(url,Payload)
       setCart(updatedCart);
     } else {
-      setCart([...cart, { ...item, quantity: 1 }]);
+      const cartPayload = {
+        "itemId": item.id,
+        "itemName": item.name,
+        "itemImg": item.image,
+        "price": item.price,
+        "quantity": 1,
+        "itemtotalPrice": item.price,
+        "itemDiscount": JSON.stringify((Math.random() * 25).toFixed(2))
+      }
+      const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart";
+      const Payload = {
+        "cartItemId": crypto.randomUUID(),
+        "userName": sessionStorage.getItem("username"),
+        "isCartActive": true,
+        "createdDate": new Date().toISOString(),
+        "cartItems": [cartPayload]
+      }
+      const response = await axios.post(url, Payload);
+
+      setCart([...cart, cartPayload]);
     }
 
     await captureEvent("ADD_TO_CART");
@@ -1814,116 +1848,102 @@ const generateSuggestions = () => {
 
   return (
     <div className="app">
-      {/* ORDER MODAL */}
+    
 
-      {showOrderModal && (
-        <div className="orderModalOverlay">
-          <div className="orderModal">
+      <main className="content">
+        <Routes>
+{!userNameExists? (
+<>
+      <Route
+        path="/login"
+        element={<Login captureEvent={captureEvent} />}
+      />
+ 
+      <Route
+        path="*"
+        element={<Navigate to="/login" replace />}
+      />
+    </>
+): (
+<>
+
+          {/* LOCATIONS */}
+
+          <Route path="/locations" element={<Locations />} />
+
+          {/* HOME */}
+
+          <Route
+            path="/"
+            element={
+              <>
+
+              {showSuggestionModal && (
+        <div className="modalOverlay">
+          <div className="suggestionModal">
+            {/* CLOSE BUTTON */}
             <button
-              className="closeModalBtn"
-              onClick={() => setShowOrderModal(false)}
+              className="closeSuggestionBtn"
+              onClick={() => setShowSuggestionModal(false)}
             >
               ×
             </button>
 
-            <div className="successIcon">✓</div>
+            <h2 className="suggestionTitle">You may also like</h2>
 
-            <h2>Order placed</h2>
+            <p className="suggestionDesc">
+              Complete your order with beverages and sweets
+            </p>
 
-            <p>Your Sunrise Bagels order has been placed successfully.</p>
+            <div className="suggestionGrid">
+              {suggestedItems.map((item, index) => (
+                <div
+                  className="suggestionCard"
+                  key={`${item.id}-${index}`}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                  />
 
-            <div className="orderStoreInfo">
-              <h3>{selectedBranch.name}</h3>
+                  <div className="suggestionContent">
 
-              <span>{selectedBranch.address}</span>
+                    <h3>{item.name}</h3>
+
+                    <p>${item.price}</p>
+
+
+                    <button
+                      onClick={() => {
+                        addUpsellToCart(item);
+                      }}
+                    >
+                      Add item
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="orderTotal">Total: ${subtotal.toFixed(2)}</div>
+            <div className="suggestionDivider"></div>
 
-            <button
-              className="doneBtn"
-              onClick={() => {
-                setShowOrderModal(false);
-
-                setCart([]);
-
-                navigate(`/${queryString}`);
-              }}
-            >
-              Done
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* SUGGESTION MODAL */}
-
-   {showSuggestionModal && (
-  <div className="modalOverlay">
-    <div className="suggestionModal">
-      {/* CLOSE BUTTON */}
-      <button
-        className="closeSuggestionBtn"
-        onClick={() => setShowSuggestionModal(false)}
-      >
-        ×
-      </button>
- 
-      <h2 className="suggestionTitle">You may also like</h2>
- 
-      <p className="suggestionDesc">
-        Complete your order with beverages and sweets
-      </p>
- 
-      <div className="suggestionGrid">
-        {suggestedItems.map((item, index) => (
-          <div
-            className="suggestionCard"
-            key={`${item.id}-${index}`}
-          >
-            <img
-              src={item.image}
-              alt={item.name}
-            />
- 
-            <div className="suggestionContent">
-           
-                <h3>{item.name}</h3>
- 
-                <p>${item.price}</p>
-             
- 
+            <div className="suggestionFooter">
               <button
+                className="proceedBtn"
                 onClick={() => {
-                  addUpsellToCart(item);
+                  setShowSuggestionModal(false);
+
+                  navigate(`/cart${queryString}`);
+
+                  captureEvent("PROCEED_TO_CART");
                 }}
               >
-                Add item
+                Go To Cart
               </button>
             </div>
           </div>
-        ))}
-      </div>
- 
-      <div className="suggestionDivider"></div>
- 
-      <div className="suggestionFooter">
-        <button
-          className="proceedBtn"
-          onClick={() => {
-            setShowSuggestionModal(false);
- 
-            navigate(`/cart${queryString}`);
- 
-            captureEvent("PROCEED_TO_CART");
-          }}
-        >
-          Go To Cart
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
       {/* PICKUP MODAL */}
 
@@ -2029,20 +2049,6 @@ const generateSuggestions = () => {
         </nav>
       )}
 
-      {/* ROUTES */}
-
-      <main className="content">
-        <Routes>
-
-          {/* LOCATIONS */}
-
-          <Route path="/locations" element={<Locations />} />
-
-          {/* HOME */}
-
-          <Route
-            path="/"
-            element={
               <section className="menuSection">
                 <p className="menuSub">OUR MENU</p>
 
@@ -2068,6 +2074,8 @@ const generateSuggestions = () => {
                   ))}
                 </div>
               </section>
+              </>
+              
             }
           />
 
@@ -2267,7 +2275,49 @@ const generateSuggestions = () => {
           <Route
             path="/order-success"
             element={
-              <OrderSuccess
+              <>
+              
+              {showOrderModal && (
+        <div className="orderModalOverlay">
+          <div className="orderModal">
+            <button
+              className="closeModalBtn"
+              onClick={() => setShowOrderModal(false)}
+            >
+              ×
+            </button>
+
+            <div className="successIcon">✓</div>
+
+            <h2>Order placed</h2>
+
+            <p>Your Sunrise Bagels order has been placed successfully.</p>
+
+            <div className="orderStoreInfo">
+              <h3>{selectedBranch.name}</h3>
+
+              <span>{selectedBranch.address}</span>
+            </div>
+
+            <div className="orderTotal">Total: ${subtotal.toFixed(2)}</div>
+
+            <button
+              className="doneBtn"
+              onClick={() => {
+                setShowOrderModal(false);
+
+                setCart([]);
+
+                navigate(`/${queryString}`);
+              }}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+       <OrderSuccess
                 subtotal={subtotal}
                 selectedBranch={selectedBranch}
                 handleDone={() => {
@@ -2278,8 +2328,17 @@ const generateSuggestions = () => {
                 captureEvent={captureEvent}
                 setCart={setCart}
               />
+
+              </>
+             
             }
           />
+           <Route
+        path="*"
+        element={<Navigate to="/login" replace />}
+      />
+</>
+          )}
         </Routes>
       </main>
     </div>

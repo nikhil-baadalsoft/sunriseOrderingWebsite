@@ -1,0 +1,96 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+.login-page {
+  height: 100vh;
+  display: flex;
+}
+ 
+/* Left Side */
+.image-section {
+  flex: 1;
+  overflow: hidden;
+}
+ 
+.bagel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+ 
+/* Right Side */
+.form-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fafafa;
+}
+ 
+.login-card {
+  width: 450px;
+  height: 420px;
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+ 
+}
+ 
+.login-card h1 {
+  margin-bottom: 10px;
+}
+ 
+.login-card p {
+  color: #666;
+  margin-bottom: 25px;
+}
+ 
+.login-card input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+}
+ 
+.login-card button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: #000;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+ 
+}
+ 
+.loginSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+ 
+/* Mobile */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+ 
+  .image-section {
+    height: 35vh;
+  }
+ 
+  .form-section {
+    height: 65vh;
+  }
+ 
+  .login-card {
+    width: 90%;
+  }
+}
