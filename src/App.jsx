@@ -284,7 +284,7 @@ function App() {
     }
   }
   useEffect(() => {
-    fetchCartData()
+    fetchCartData() 
   }, [])
 
   const [showPickupModal, setShowPickupModal] = useState(true);

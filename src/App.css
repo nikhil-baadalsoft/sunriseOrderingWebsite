@@ -49,7 +49,7 @@ button {
  
   border-bottom: 1px solid #ececec;
  
-  padding: 0 34px;
+ 
  
   display: flex;
   align-items: center;
@@ -97,21 +97,9 @@ button {
     rgba(255, 90, 0, 0.18);
 }
  
-.logoText {
-  margin-top: 50px;
-  color: #ff5a00;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
- 
-.brand {
-  font-size: 15px;
-  color: #111;
-  font-weight: 700;
- 
-}
- 
+
+
+
 /* =========================
    CART BUTTON
 ========================= */
@@ -183,6 +171,7 @@ button {
   font-size: 13px;
   letter-spacing: 1px;
   margin-bottom: 6px;
+    margin-top: 50px;
 }
  
 .brand {
@@ -1199,26 +1188,41 @@ button {
  
 @media (max-width: 700px) {
  
-  .suggestionModal {
-    max-width: 95%;
-  }
- 
-  .suggestionTitle {
-    font-size: 28px;
-  }
- 
-  .suggestionGrid {
-    grid-template-columns: 1fr;
-    padding: 0 20px 24px;
-  }
- 
-  .suggestionFooter {
-    padding: 20px;
-  }
- 
-  .proceedBtn {
-    width: 100%;
-  }
+    .suggestionModal {
+  margin-top: 100px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.suggestionModal::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.suggestionTitle {
+  font-size: 28px;
+}
+
+.suggestionGrid {
+  grid-template-columns: 1fr;
+}
+
+.suggestionFooter {
+  padding: 20px;
+  position: sticky;
+  bottom: 0;
+  background: white;
+}
+
+.proceedBtn {
+  width: 100%;
+}
+
 }
  
 /* =========================
@@ -1226,6 +1230,25 @@ button {
 ========================= */
  
 @media (max-width: 600px) {
+
+    .navbar {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   
+  }
+
+  .logoText {
+    margin-top: 50px;
+    margin-bottom: 2px;
+  
+  }
+
+  .cartIconBtn {
+    width: 48px;
+    height: 48px;
+  }
+
   .pickupModal h2 {
     font-size: 24px;
   }
@@ -1256,12 +1279,36 @@ button {
 ========================================= */
  
 @media (max-width: 1200px) {
+   .navbar {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   
+  }
+
+  .logoText {
+    margin-top: 50px;
+    margin-bottom: 2px;
+  
+  }
   .cartLayout {
     grid-template-columns: 1fr;
   }
  
   .deliveryCard {
     position: static;
+  }
+  .pickupModal{
+     margin-top: 100px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+
   }
 }
  
@@ -1272,7 +1319,7 @@ button {
  
   .sidebar {
     width: 100%;
-    min-width: 100%;
+    min-width: 100%; 
     border-right: none;
     border-bottom: 1px solid #ececec;
   }
@@ -1348,6 +1395,7 @@ button {
 }
  
 @media (max-width: 900px) {
+
   .deliveryCard {
     position: static;
   }

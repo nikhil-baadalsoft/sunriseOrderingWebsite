@@ -272,11 +272,19 @@ body {
 @media (max-width: 900px) {
   .navbar {
     padding: 22px 24px;
-    flex-direction: column;
+   
     gap: 22px;
     align-items: flex-start;
   }
 
+
+   .heroBanner {
+ display: flex;
+ flex-direction: column;
+  padding: 60px 24px;
+  gap: 40px;
+  
+  }
   .heroBanner {
     padding: 60px 24px;
   }
