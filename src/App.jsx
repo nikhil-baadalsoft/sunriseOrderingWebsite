@@ -267,7 +267,7 @@ const menuItems = [
 
 function App() {
   const navigate = useNavigate();
-
+  const userNameExists = sessionStorage.getItem("username");
 
   const [cart, setCart] = useState([]);
   const [cartData, setCartData] = useState([]);
@@ -303,7 +303,7 @@ function App() {
 
   const [suggestedItems, setSuggestedItems] = useState([]);
 
-  const userNameExists = sessionStorage.getItem("username");
+  
 
   const currentPage =
     window.location.pathname === "/"

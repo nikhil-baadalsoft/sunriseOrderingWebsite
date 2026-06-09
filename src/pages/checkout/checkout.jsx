@@ -192,10 +192,10 @@ function Checkout({
           {cart.map((item) => (
             <div
               className="summaryItem"
-              key={item.id}
+              key={item.itemId}
             >
               <span>
-                {item.name} ×{" "}
+                {item.itemName} ×{" "}
                 {item.quantity}
               </span>
 
