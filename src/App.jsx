@@ -662,24 +662,50 @@ const updateCart = (newCart) => {
 
 
   //SaveCartonExit
+  // const saveCartOnExit = () => {
+  //   if (cartRef.current.length === 0) return;
+
+  //   const payload = {
+  //     cartItemId: crypto.randomUUID(),
+  //     userName: sessionStorage.getItem("username"),
+  //     isCartActive: true,
+  //     createdDate: new Date().toISOString(),
+  //     breakfastItems: cartRef.current,
+  //   };
+
+  //   navigator.sendBeacon(
+  //     "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
+  //     new Blob([JSON.stringify(payload)], {
+  //       type: "application/json",
+  //     })
+  //   );
+  // };
+
   const saveCartOnExit = () => {
-    if (cartRef.current.length === 0) return;
+  if (cartRef.current.length === 0) return;
 
-    const payload = {
-      cartItemId: crypto.randomUUID(),
-      userName: sessionStorage.getItem("username"),
-      isCartActive: true,
-      createdDate: new Date().toISOString(),
-      breakfastItems: cartRef.current,
-    };
-
-    navigator.sendBeacon(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
-      new Blob([JSON.stringify(payload)], {
-        type: "application/json",
-      })
-    );
+  const payload = {
+    cartItemId: crypto.randomUUID(),
+    userName: sessionStorage.getItem("username"),
+    isCartActive: true,
+    createdDate: new Date().toISOString(),
+    breakfastItems: cartRef.current,
   };
+
+  fetch(
+    "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }
+  ).catch((err) =>
+    console.error("Save Cart failed", err)
+  );
+};
   // -----------------------------------
   // EXIT TRACKING
   // -----------------------------------
