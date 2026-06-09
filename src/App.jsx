@@ -271,21 +271,29 @@ function App() {
 
   const [cart, setCart] = useState([]);
   const [cartData, setCartData] = useState([]);
+  const cartRef = useRef(cart);
   const fetchCartData = async () => {
     try {
       const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
       const response = await axios.get(url);
-      console.log("Response", response)
+
       sessionStorage.setItem("CartId", response.data.cartItemId);
-      setCartData(response.data)
+      setCartData(response.data);
+
+      if (response.data.cartItems && response.data.cartItems.length > 0) {
+        setCart(response.data.cartItems);
+      }
 
     } catch (error) {
-      console.log("Error", error.message)
+      console.log("Error", error.message);
     }
-  }
+  };
   useEffect(() => {
     fetchCartData()
   }, [])
+  useEffect(() => {
+    cartRef.current = cart;
+  }, [cart])
 
   const [showPickupModal, setShowPickupModal] = useState(true);
 
@@ -605,10 +613,31 @@ function App() {
 
   // }, []);
 
+
+  //SaveCartonExit
+  const saveCartOnExit = () => {
+    if (cartRef.current.length === 0) return;
+
+    const payload = {
+      cartItemId: crypto.randomUUID(),
+      userName: sessionStorage.getItem("username"),
+      isCartActive: true,
+      createdDate: new Date().toISOString(),
+      cartItems: cartRef.current,
+    };
+
+    navigator.sendBeacon(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
+      new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      })
+    );
+  };
   // -----------------------------------
   // EXIT TRACKING
   // -----------------------------------
   const trackExit = (targetPage) => {
+    saveCartOnExit()
     let savedEventMap = {};
     try {
       savedEventMap = JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
@@ -773,38 +802,38 @@ function App() {
   // };
 
   const addToCart = (item) => {
-  const existingItem = cart.find(
-    (cartItem) => cartItem.itemId === item.id
-  );
+    const existingItem = cart.find(
+      (cartItem) => cartItem.itemId === item.id
+    );
 
-  if (existingItem) {
-    const updatedCart = cart.map((cartItem) =>
-      cartItem.itemId === item.id
-        ? {
+    if (existingItem) {
+      const updatedCart = cart.map((cartItem) =>
+        cartItem.itemId === item.id
+          ? {
             ...cartItem,
             quantity: cartItem.quantity + 1,
             itemtotalPrice:
               (cartItem.quantity + 1) * cartItem.price,
           }
-        : cartItem
-    );
+          : cartItem
+      );
 
-    setCart(updatedCart);
-  } else {
+      setCart(updatedCart);
+    } else {
 
-    const cartPayload = {
-      itemId: item.id,
-      itemName: item.name,
-      itemImg: item.image,
-      price: item.price,
-      quantity: 1,
-      itemtotalPrice: item.price,
-      itemDiscount: (Math.random() * 25).toFixed(2),
-    };
+      const cartPayload = {
+        itemId: item.id,
+        itemName: item.name,
+        itemImg: item.image,
+        price: item.price,
+        quantity: 1,
+        itemtotalPrice: item.price,
+        itemDiscount: (Math.random() * 25).toFixed(2),
+      };
 
-    setCart([...cart, cartPayload]);
-  }
-};
+      setCart([...cart, cartPayload]);
+    }
+  };
 
   // -----------------------------------
   // ADD UPSELL ITEM TO CART
@@ -829,84 +858,85 @@ function App() {
 
   //   await captureEvent("ADD_UPSELL_TO_CART");
   // };
-const addUpsellToCart = async (item) => {
-  const existingItem = cart.find(
-    (cartItem) => cartItem.itemId === item.id
-  );
+  const addUpsellToCart = async (item) => {
+    const existingItem = cart.find(
+      (cartItem) => cartItem.itemId === item.id
+    );
 
-  if (existingItem) {
-    const updatedCart = cart.map((cartItem) =>
-      cartItem.itemId === item.id
-        ? {
+    if (existingItem) {
+      const updatedCart = cart.map((cartItem) =>
+        cartItem.itemId === item.id
+          ? {
             ...cartItem,
             quantity: cartItem.quantity + 1,
             itemtotalPrice:
               (cartItem.quantity + 1) * cartItem.price,
           }
-        : cartItem
-    );
+          : cartItem
+      );
 
-    setCart(updatedCart);
-  } else {
-    const cartPayload = {
-      itemId: item.id,
-      itemName: item.name,
-      itemImg: item.image,
-      price: item.price,
-      quantity: 1,
-      itemtotalPrice: item.price,
-      itemDiscount: (Math.random() * 25).toFixed(2),
-    };
+      setCart(updatedCart);
+    } else {
+      const cartPayload = {
+        itemId: item.id,
+        itemName: item.name,
+        itemImg: item.image,
+        price: item.price,
+        quantity: 1,
+        itemtotalPrice: item.price,
+        itemDiscount: (Math.random() * 25).toFixed(2),
+      };
 
-    setCart([...cart, cartPayload]);
-  }
+      setCart([...cart, cartPayload]);
+    }
 
-  await captureEvent("ADD_UPSELL_TO_CART");
-};
+    await captureEvent("ADD_UPSELL_TO_CART");
+  };
   // -----------------------------------
   // INCREASE QUANTITY
   // -----------------------------------
 
-const increaseQuantity = (id) => {
-  const updatedCart = cart.map((item) =>
-    item.itemId === id
-      ? {
+  const increaseQuantity = (id) => {
+    const updatedCart = cart.map((item) =>
+      item.itemId === id
+        ? {
           ...item,
           quantity: item.quantity + 1,
           itemtotalPrice: (item.quantity + 1) * item.price,
         }
-      : item
-  );
+        : item
+    );
 
-  setCart(updatedCart);
-};
+    setCart(updatedCart);
+  };
 
   // -----------------------------------
   // DECREASE QUANTITY
   // -----------------------------------
 
-const decreaseQuantity = (id) => {
-  const updatedCart = cart
-    .map((item) =>
-      item.itemId === id
-        ? {
+  const decreaseQuantity = (id) => {
+    const updatedCart = cart
+      .map((item) =>
+        item.itemId === id
+          ? {
             ...item,
             quantity: item.quantity - 1,
             itemtotalPrice: (item.quantity - 1) * item.price,
           }
-        : item
-    )
-    .filter((item) => item.quantity > 0);
+          : item
+      )
+      .filter((item) => item.quantity > 0);
 
-  setCart(updatedCart);
-};
+    setCart(updatedCart);
+  };
 
   // -----------------------------------
   // REMOVE ITEM
   // -----------------------------------
 
   const removeItem = async (id) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
+    // const updatedCart = cart.filter((item) => item.id !== id);
+    const updatedCart = cart.filter((item) => item.itemId !== id);
 
     setCart(updatedCart);
 
@@ -926,17 +956,17 @@ const decreaseQuantity = (id) => {
   // PAYMENT
   // -----------------------------------
 
-    const saveCart = async () => {
-  const payload = {
-    cartItemId: crypto.randomUUID(),
-    userName: sessionStorage.getItem("username"),
-    isCartActive: true,
-    createdDate: new Date().toISOString(),
-    cartItems: cart,
+  const saveCart = async () => {
+    const payload = {
+      cartItemId: crypto.randomUUID(),
+      userName: sessionStorage.getItem("username"),
+      isCartActive: true,
+      createdDate: new Date().toISOString(),
+      cartItems: cart,
+    };
+    const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart"
+    await axios.post(url, payload);
   };
-  const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart"
-  await axios.post(url, payload);
-};
 
   const handlePayment = async () => {
     if (!deliveryDetails.fullName || !deliveryDetails.phone) {
@@ -975,8 +1005,8 @@ const decreaseQuantity = (id) => {
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("latestOrder", JSON.stringify(orderPayload));
-await saveCart()
-    await captureEvent("PROCEED_TO_CHECKOUT",cart);
+    await saveCart()
+    await captureEvent("PROCEED_TO_CHECKOUT", cart);
 
     navigate(`/checkout${queryString}`);
   };
@@ -1280,41 +1310,41 @@ await saveCart()
                                 </div>
                               ))} */}
 
-                           {cart.map((item) => (
-  <div className="cartItem" key={item.itemId}>
-    <div className="cartLeft">
-      <img src={item.itemImg} alt={item.itemName} />
+                              {cart.map((item) => (
+                                <div className="cartItem" key={item.itemId}>
+                                  <div className="cartLeft">
+                                    <img src={item.itemImg} alt={item.itemName} />
 
-      <div>
-        <h3>{item.itemName}</h3>
-        <p>${item.price.toFixed(2)} each</p>
-      </div>
-    </div>
+                                    <div>
+                                      <h3>{item.itemName}</h3>
+                                      <p>${item.price.toFixed(2)} each</p>
+                                    </div>
+                                  </div>
 
-    <div className="cartRight">
-      <div className="quantityBox">
-        <button onClick={() => decreaseQuantity(item.itemId)}>
-          -
-        </button>
+                                  <div className="cartRight">
+                                    <div className="quantityBox">
+                                      <button onClick={() => decreaseQuantity(item.itemId)}>
+                                        -
+                                      </button>
 
-        <span>{item.quantity}</span>
+                                      <span>{item.quantity}</span>
 
-        <button onClick={() => increaseQuantity(item.itemId)}>
-          +
-        </button>
-      </div>
+                                      <button onClick={() => increaseQuantity(item.itemId)}>
+                                        +
+                                      </button>
+                                    </div>
 
-      <h3>${item.itemtotalPrice.toFixed(2)}</h3>
+                                    <h3>${item.itemtotalPrice.toFixed(2)}</h3>
 
-      <button
-        className="removeBtn"
-        onClick={() => removeItem(item.itemId)}
-      >
-        Remove
-      </button>
-    </div>
-  </div>
-))}
+                                    <button
+                                      className="removeBtn"
+                                      onClick={() => removeItem(item.itemId)}
+                                    >
+                                      Remove
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
 
                             <div className="subtotal">
