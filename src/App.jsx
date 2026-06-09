@@ -267,21 +267,52 @@ const menuItems = [
 
 function App() {
   const navigate = useNavigate();
-  const userNameExists = sessionStorage.getItem("username");
+  const justLoggedIn = useRef(false);
+  const [userNameExists, setUserNameExists] = useState(sessionStorage.getItem("username"));
 
   const [cart, setCart] = useState([]);
   const [cartData, setCartData] = useState([]);
   const cartRef = useRef(cart);
+const updateCart = (newCart) => {
+  setCart(newCart);
+  cartRef.current = newCart;
+};
+  // const fetchCartData = async () => {
+  //   try {
+  //     const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
+  //     const response = await axios.get(url);
+  //     console.log("FULL RESPONSE =>", response.data); 
+  //     sessionStorage.setItem("CartId", response.data.cartItemId);
+  //     updateCartData(response.data);
+
+  //     if (response.breakfastItems && response.breakfastItems.length > 0) {
+  //       updateCart(response.data.cartItems);
+  //     }
+
+  //   } catch (error) {
+  //     console.log("Error", error.message);
+  //   }
+  // };
+
   const fetchCartData = async () => {
     try {
       const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
+      console.log("Url", url);
       const response = await axios.get(url);
+      console.log("FULL RESPONSE =>", response.data);
 
-      sessionStorage.setItem("CartId", response.data.cartItemId);
-      setCartData(response.data);
 
-      if (response.data.cartItems && response.data.cartItems.length > 0) {
-        setCart(response.data.cartItems);
+      if (Array.isArray(response.data) && response.data.length > 0) {
+
+
+        const latestCart = response.data[response.data.length - 1];
+
+        sessionStorage.setItem("CartId", latestCart.cartItemId);
+
+
+        if (latestCart.breakfastItems && latestCart.breakfastItems.length > 0) {
+          updateCart(latestCart.breakfastItems);
+        }
       }
 
     } catch (error) {
@@ -289,8 +320,24 @@ function App() {
     }
   };
   useEffect(() => {
-    fetchCartData() 
-  }, [])
+    const savedCart = sessionStorage.getItem("cart");
+    if (savedCart) updateCart(JSON.parse(savedCart));
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+  useEffect(() => {
+    if (userNameExists) {
+      fetchCartData()
+    }
+  }, [userNameExists])
+  useEffect(() => {
+    if (userNameExists && justLoggedIn.current) {
+      justLoggedIn.current = false;
+      navigate("/locations");
+    }
+  }, [userNameExists]);
   useEffect(() => {
     cartRef.current = cart;
   }, [cart])
@@ -303,7 +350,7 @@ function App() {
 
   const [suggestedItems, setSuggestedItems] = useState([]);
 
-  
+
 
   const currentPage =
     window.location.pathname === "/"
@@ -623,7 +670,7 @@ function App() {
       userName: sessionStorage.getItem("username"),
       isCartActive: true,
       createdDate: new Date().toISOString(),
-      cartItems: cartRef.current,
+      breakfastItems: cartRef.current,
     };
 
     navigator.sendBeacon(
@@ -648,82 +695,120 @@ function App() {
     let currentCounter = Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 4;
     let eventSequence;
 
-    if (savedEventMap["EXIT_PAGE"] !== undefined) {
-      eventSequence = savedEventMap["EXIT_PAGE"];
-    } else {
-      eventSequence = currentCounter;
-      savedEventMap["EXIT_PAGE"] = eventSequence;
-      currentCounter++;
+  if (savedEventMap["EXIT_PAGE"] !== undefined) {
+    eventSequence = savedEventMap["EXIT_PAGE"];
+  } else {
+    eventSequence = currentCounter;
+    savedEventMap["EXIT_PAGE"] = eventSequence;
+    currentCounter++;
 
-      try {
-        sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
-        sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
-      } catch (e) {
-        // Fail silently to prioritize delivery execution
-      }
+    try {
+      sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+      sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+    } catch (e) {
+      // Fail silently to prioritize delivery execution
     }
+  }
 
-    const payload = {
-      eventName: "EXIT_PAGE",
-      page: targetPage,
-      eventSequence,
-      eventTimestamp: new Date().toISOString(),
-      customerId: "",
-      sessionId,
-      device: {
-        browser: getBrowser(),
-        operatingSystem: getOperatingSystem(),
-        deviceType: getDeviceType(),
-      },
-      market: {
-        utmSource: queryParams.get("utm_source") || "DIRECT",
-        campaign: queryParams.get("utm_campaign") || "UNKNOWN",
-      },
-      referrer: {
-        url: window.location.origin + window.location.pathname,
-        referrer: document.referrer || "DIRECT",
-      },
-    };
-
-    navigator.sendBeacon(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
-      new Blob([JSON.stringify(payload)], { type: "application/json" })
-    );
+  const payload = {
+    eventName: "EXIT_PAGE",
+    page: targetPage,
+    eventSequence,
+    eventTimestamp: new Date().toISOString(),
+    customerId: "",
+    sessionId,
+    device: {
+      browser: getBrowser(),
+      operatingSystem: getOperatingSystem(),
+      deviceType: getDeviceType(),
+    },
+    market: {
+      utmSource: queryParams.get("utm_source") || "DIRECT",
+      campaign: queryParams.get("utm_campaign") || "UNKNOWN",
+    },
+    referrer: {
+      url: window.location.origin + window.location.pathname,
+      referrer: document.referrer || "DIRECT",
+    },
   };
 
+  // Keepalive used here as well for reliable JSON transmission on exit
+  fetch("https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch((err) => console.error("Exit tracking failed", err));
+};
+
+// KEEP TRACK OF UPDATED CURRENT PAGE REF WITHOUT REMOUNTING LISTENERS
+const currentPageRef = useRef(currentPage);
+const hasTrackedExit = useRef(false);
+
+useEffect(() => {
+  currentPageRef.current = currentPage;
+}, [currentPage]);
+
+// CLEANED UP: SINGLE TAB LIFE-CYCLE INTERCEPTOR
+useEffect(() => {
+  const handleExitTrigger = () => {
+    if (!hasTrackedExit.current) {
+      hasTrackedExit.current = true;
+      trackExit(currentPageRef.current);
+    }
+  };
+
+  const handleVisibilityChange = () => {
+    if (document.visibilityState === "hidden") {
+      handleExitTrigger();
+    } else if (document.visibilityState === "visible") {
+      hasTrackedExit.current = false; // Reset if user returns to tab
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("pagehide", handleExitTrigger);
+
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    window.removeEventListener("pagehide", handleExitTrigger);
+  };
+}, []);
   // KEEP TRACK OF UPDATED CURRENT PAGE REF WITHOUT REMOUNTING LISTENERS
-  const currentPageRef = useRef(currentPage);
-  const hasTrackedExit = useRef(false);
+  // const currentPageRef = useRef(currentPage);
+  // const hasTrackedExit = useRef(false);
 
-  useEffect(() => {
-    currentPageRef.current = currentPage;
-  }, [currentPage]);
+  // useEffect(() => {
+  //   currentPageRef.current = currentPage;
+  // }, [currentPage]);
 
-  // COMBINED TAB LIFE-CYCLE INTERCEPTOR
-  useEffect(() => {
-    const handleExitTrigger = () => {
-      if (!hasTrackedExit.current) {
-        trackExit(currentPageRef.current);
-        hasTrackedExit.current = true;
-      }
-    };
+  // // COMBINED TAB LIFE-CYCLE INTERCEPTOR
+  // useEffect(() => {
+  //   const handleExitTrigger = () => {
+  //     if (!hasTrackedExit.current) {
+  //       trackExit(currentPageRef.current);
+  //       hasTrackedExit.current = true;
+  //     }
+  //   };
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        handleExitTrigger();
-      } else if (document.visibilityState === "visible") {
-        hasTrackedExit.current = false; // Reset if user returns to tab
-      }
-    };
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === "hidden") {
+  //       handleExitTrigger();
+  //     } else if (document.visibilityState === "visible") {
+  //       hasTrackedExit.current = false; // Reset if user returns to tab
+  //     }
+  //   };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("pagehide", handleExitTrigger);
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   window.addEventListener("pagehide", handleExitTrigger);
 
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("pagehide", handleExitTrigger);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
+  //     window.removeEventListener("pagehide", handleExitTrigger);
+  //   };
+  // }, []);
 
   // INITIAL SETUP
   // useEffect(() => {
@@ -772,7 +857,7 @@ function App() {
   //     //           ]
   //     // }
   //     const response = await axios.put(url, Payload)
-  //     setCart(updatedCart);
+  //     updateCart(updatedCart);
   //   } else {
   //     const cartPayload = {
   //       "itemId": item.id,
@@ -785,7 +870,7 @@ function App() {
   //     }
 
 
-  //     setCart([...cart, cartPayload]);
+  //     updateCart([...cart, cartPayload]);
 
   //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart";
   //     const Payload = {
@@ -818,7 +903,7 @@ function App() {
           : cartItem
       );
 
-      setCart(updatedCart);
+      updateCart(updatedCart);
     } else {
 
       const cartPayload = {
@@ -831,7 +916,7 @@ function App() {
         itemDiscount: (Math.random() * 25).toFixed(2),
       };
 
-      setCart([...cart, cartPayload]);
+      updateCart([...cart, cartPayload]);
     }
   };
 
@@ -851,9 +936,9 @@ function App() {
   //         : cartItem,
   //     );
 
-  //     setCart(updatedCart);
+  //     updateCart(updatedCart);
   //   } else {
-  //     setCart([...cart, { ...item, quantity: 1 }]);
+  //     updateCart([...cart, { ...item, quantity: 1 }]);
   //   }
 
   //   await captureEvent("ADD_UPSELL_TO_CART");
@@ -875,7 +960,7 @@ function App() {
           : cartItem
       );
 
-      setCart(updatedCart);
+      updateCart(updatedCart);
     } else {
       const cartPayload = {
         itemId: item.id,
@@ -887,7 +972,7 @@ function App() {
         itemDiscount: (Math.random() * 25).toFixed(2),
       };
 
-      setCart([...cart, cartPayload]);
+      updateCart([...cart, cartPayload]);
     }
 
     await captureEvent("ADD_UPSELL_TO_CART");
@@ -907,7 +992,7 @@ function App() {
         : item
     );
 
-    setCart(updatedCart);
+    updateCart(updatedCart);
   };
 
   // -----------------------------------
@@ -927,7 +1012,7 @@ function App() {
       )
       .filter((item) => item.quantity > 0);
 
-    setCart(updatedCart);
+    updateCart(updatedCart);
   };
 
   // -----------------------------------
@@ -938,7 +1023,7 @@ function App() {
     // const updatedCart = cart.filter((item) => item.id !== id);
     const updatedCart = cart.filter((item) => item.itemId !== id);
 
-    setCart(updatedCart);
+    updateCart(updatedCart);
 
     await captureEvent("REMOVE_FROM_CART");
   };
@@ -962,7 +1047,7 @@ function App() {
       userName: sessionStorage.getItem("username"),
       isCartActive: true,
       createdDate: new Date().toISOString(),
-      cartItems: cart,
+      breakfastItems: cart,
     };
     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart"
     await axios.post(url, payload);
@@ -1021,7 +1106,7 @@ function App() {
             <>
               <Route
                 path="/login"
-                element={<Login captureEvent={captureEvent} />}
+                element={<Login captureEvent={captureEvent} setUserNameExists={setUserNameExists} justLoggedIn={justLoggedIn} />}
               />
 
               <Route
@@ -1507,7 +1592,7 @@ function App() {
                             onClick={() => {
                               setShowOrderModal(false);
 
-                              setCart([]);
+                              updateCart([]);
 
                               navigate(`/${queryString}`);
                             }}
@@ -1522,12 +1607,12 @@ function App() {
                       subtotal={subtotal}
                       selectedBranch={selectedBranch}
                       handleDone={() => {
-                        setCart([]);
+                        updateCart([]);
 
                         navigate(`/${queryString}`);
                       }}
                       captureEvent={captureEvent}
-                      setCart={setCart}
+                      updateCart={updateCart}
                     />
 
                   </>
@@ -1547,3 +1632,4 @@ function App() {
 }
 
 export default App;
+

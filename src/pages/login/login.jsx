@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./login.css";
 import axios from "axios";
  
-const Login = () => {
+const Login = ({setUserNameExists,justLoggedIn}) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -24,6 +24,7 @@ const Login = () => {
       username: formData.username,
       password: formData.password,
     };
+    console.log("LoginPayload",payload)
  
     try{
     const response = await axios.post("https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/login", payload,
@@ -34,8 +35,10 @@ const Login = () => {
         });
     console.log("Login successful:", response.data);
     sessionStorage.setItem("username", formData.username);
+    justLoggedIn.current = true;
+    setUserNameExists(formData.username);
  
-    navigate("/locations");
+    // navigate("/locations");
   } catch (error) {
     console.error("Login failed:", error);  
  
