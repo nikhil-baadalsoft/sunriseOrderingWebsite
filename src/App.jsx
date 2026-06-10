@@ -912,7 +912,7 @@ useEffect(() => {
   //   await captureEvent("ADD_TO_CART");
   // };
 
-  const addToCart = (item) => {
+  const addToCart = async (item) => {
     const existingItem = cart.find(
       (cartItem) => cartItem.itemId === item.id
     );
@@ -944,6 +944,7 @@ useEffect(() => {
 
       updateCart([...cart, cartPayload]);
     }
+    await captureEvent("ADD_TO_CART")
   };
 
   // -----------------------------------
