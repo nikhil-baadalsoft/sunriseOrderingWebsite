@@ -165,7 +165,7 @@ const Login = ({cart}) => {
             onChange={handleChange}
           />
  
-          <button type="submit">Login</button>
+          <button type="submit" style={{background: "rgb(232, 80, 26)"}}>Login</button>
 </div>
          
         </form>
