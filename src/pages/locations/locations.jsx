@@ -264,7 +264,7 @@ const Locations = ({hasCartItems}) => {
           className="primaryBtn"
           onClick={() => {
             setShowCartModal(false);
-            window.location.href = "/checkout";
+            window.location.href = "/cart";
           }}
         >
           Go to Cart
