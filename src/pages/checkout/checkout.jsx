@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./checkout.css";
 
 function Checkout({
@@ -19,6 +20,25 @@ function Checkout({
     });
 
 
+  const ChangeCartStatus = async () => {
+    try {
+      const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/UpdateCartStatus";
+      const cartid = sessionStorage.getItem("CartId");
+      // debugger;
+      console.log("CartId", cartid)
+      if (cartid) {
+        const payload = {
+          "cartItemId": cartid,
+          "isCartActive": false
+        }
+        console.log("Payload", payload)
+        const response = await axios.put(url,payload);
+        console.log("Response", response)
+      }
+    } catch (error) {
+      console.log("Error", error.message);
+    }
+  }
 
   const handlePayment = async () => {
     if (
@@ -30,14 +50,10 @@ function Checkout({
       return;
     }
     // await updateCartStatus()
-  
-    await captureEvent(
-      "PAYMENT_SUBMITTED"
-    );
+    await ChangeCartStatus()
+    await captureEvent("PAYMENT_SUBMITTED");
 
-    navigate(
-      `/order-success${window.location.search}`
-    );
+    navigate(`/order-success${window.location.search}`);
   };
 
   return (
@@ -63,7 +79,7 @@ function Checkout({
 
           <h2>Payment Information</h2>
 
-          <div className="inputGroup" style={{ marginTop: "20px",  }}>
+          <div className="inputGroup" style={{ marginTop: "20px", }}>
             <label>
               Cardholder Name
             </label>

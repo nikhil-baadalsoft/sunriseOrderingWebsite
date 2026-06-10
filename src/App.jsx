@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
@@ -267,77 +265,82 @@ const menuItems = [
 
 function App() {
   const navigate = useNavigate();
-  const justLoggedIn = useRef(false);
-  const [userNameExists, setUserNameExists] = useState(sessionStorage.getItem("username"));
+
 
   const [cart, setCart] = useState([]);
-  const [cartData, setCartData] = useState([]);
+ 
   const cartRef = useRef(cart);
-const updateCart = (newCart) => {
-  setCart(newCart);
-  cartRef.current = newCart;
-};
-  // const fetchCartData = async () => {
-  //   try {
-  //     const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
-  //     const response = await axios.get(url);
-  //     console.log("FULL RESPONSE =>", response.data); 
-  //     sessionStorage.setItem("CartId", response.data.cartItemId);
-  //     updateCartData(response.data);
-
-  //     if (response.breakfastItems && response.breakfastItems.length > 0) {
-  //       updateCart(response.data.cartItems);
-  //     }
-
-  //   } catch (error) {
-  //     console.log("Error", error.message);
-  //   }
-  // };
-
   const fetchCartData = async () => {
-    try {
-      const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
-      console.log("Url", url);
-      const response = await axios.get(url);
-      console.log("FULL RESPONSE =>", response.data);
+  try {
+    const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
 
+    const response = await axios.get(url);
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
+    console.log(response.data);
 
+    if (response.data && response.data.length > 0) {
+      const allItems = response.data.flatMap(
+        (cart) => cart.breakfastItems || []
+      );
 
-        const latestCart = response.data[response.data.length - 1];
+      // if cartId is same for all, you can safely take first
+      sessionStorage.setItem("CartId", response.data[0].cartItemId);
 
-        sessionStorage.setItem("CartId", latestCart.cartItemId);
-
-
-        if (latestCart.breakfastItems && latestCart.breakfastItems.length > 0) {
-          updateCart(latestCart.breakfastItems);
-        }
-      }
-
-    } catch (error) {
-      console.log("Error", error.message);
+      setCart(allItems);
     }
-  };
-  useEffect(() => {
-    const savedCart = sessionStorage.getItem("cart");
-    if (savedCart) updateCart(JSON.parse(savedCart));
-  }, []);
+  } catch (error) {
+    console.log("Error", error.message);
+  }
+};
+//   const fetchCartData = async () => {
+//   try {
+//     const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
 
+//     const response = await axios.get(url);
+
+//     console.log(response.data);
+
+//     if (response.data && response.data.length > 0) {
+//       const cartData = response.data[0];
+
+//       sessionStorage.setItem("CartId", cartData.cartItemId);
+
+//       setCart(cartData.breakfastItems || []);
+
+      
+//     }
+    
+//   } catch (error) {
+//     console.log("Error", error.message);
+//   }
+// };
+//  const fetchCartData = async () => {
+//     try {
+//       const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
+ 
+//       const response = await axios.get(url);
+ 
+//       console.log("Getting UserCart", response.data);
+ 
+//       if (response.data && response.data.length > 0) {
+//         sessionStorage.setItem(
+//           "CartId",
+//           response.data[0].cartItemId
+//         );
+ 
+//         const allItems = response.data.flatMap(
+//           (cart) => cart.breakfastItems || []
+//         );
+ 
+//         setCartData(allItems);
+//       }
+//     } catch (error) {
+//       console.log("Error", error.message);
+//     }
+//   };
   useEffect(() => {
-    sessionStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-  useEffect(() => {
-    if (userNameExists) {
-      fetchCartData()
-    }
-  }, [userNameExists])
-  useEffect(() => {
-    if (userNameExists && justLoggedIn.current) {
-      justLoggedIn.current = false;
-      navigate("/locations");
-    }
-  }, [userNameExists]);
+    fetchCartData() 
+  }, [])
   useEffect(() => {
     cartRef.current = cart;
   }, [cart])
@@ -350,7 +353,11 @@ const updateCart = (newCart) => {
 
   const [suggestedItems, setSuggestedItems] = useState([]);
 
+const [showPromotionModal, setShowPromotionModal] = useState(false);
+const PROMO_CODE = "SUNRISE20";
+const [couponCode, setCouponCode] = useState(PROMO_CODE);
 
+  const userNameExists = sessionStorage.getItem("username");
 
   const currentPage =
     window.location.pathname === "/"
@@ -404,6 +411,47 @@ const updateCart = (newCart) => {
   // -----------------------------------
   // SUGGESTED ITEMS
   // -----------------------------------
+
+
+  const totalItems = cart.reduce(
+  (sum, item) => sum + item.quantity,
+  0
+);
+
+  const todaysSpecials = menuItems.filter((item) => {
+  const name = item.name.toLowerCase();
+
+  return (
+    name.includes("signature egg sandwich nosh box") ||
+    name.includes("classic egg sandwich nosh box") ||
+    name.includes("salmon & bagels") ||
+    name.includes("coffee or cold brew for the group")
+  );
+});
+const lunchClassics = menuItems.filter((item) => {
+  const name = item.name.toLowerCase();
+
+  return (
+    name.includes("lunch classics") ||
+    name.includes("individual meals")||
+    name.includes("classic lunch sandwiches")
+  );
+});
+
+
+const pairWithItems = menuItems.filter((item) => {
+  const name = item.name.toLowerCase();
+
+  return (
+    name.includes("coffee or cold brew for the group") ||
+    name.includes("orange juice, lemonade or tea lemonade") ||
+    name.includes("individual bottled beverages")
+  );
+});
+
+const freeBagelPromo = menuItems.find(
+  (item) => item.id === "2"
+);
 
   const beverageItems = menuItems.filter((item) => {
     const name = item.name.toLowerCase();
@@ -642,6 +690,128 @@ const updateCart = (newCart) => {
     }
   };
 
+
+  const capturePromotionEvent = async (eventName) => {
+  try {
+    const savedEventMap =
+      JSON.parse(
+        sessionStorage.getItem(EVENT_MAP_KEY)
+      ) || {};
+
+    let currentCounter =
+      Number(
+        sessionStorage.getItem(EVENT_COUNTER_KEY)
+      ) || 4;
+
+    let eventSequence;
+
+    if (
+      savedEventMap[
+        "PROMOTION_FREE_BAGEL_CLAIMED"
+      ] !== undefined
+    ) {
+      eventSequence =
+        savedEventMap[
+          "PROMOTION_FREE_BAGEL_CLAIMED"
+        ];
+    } else {
+      eventSequence = currentCounter;
+
+      savedEventMap[
+        "PROMOTION_FREE_BAGEL_CLAIMED"
+      ] = eventSequence;
+
+      currentCounter++;
+
+      sessionStorage.setItem(
+        EVENT_MAP_KEY,
+        JSON.stringify(savedEventMap)
+      );
+
+      sessionStorage.setItem(
+        EVENT_COUNTER_KEY,
+        currentCounter
+      );
+    }
+
+    const payload = {
+      eventName:eventName,
+
+      eventSequence,
+
+      eventTimestamp:
+        new Date().toISOString(),
+
+      customerId: userNameExists,
+
+      sessionId,
+
+      page: currentPage,
+
+      device: {
+        browser: getBrowser(),
+        operatingSystem:
+          getOperatingSystem(),
+        deviceType: getDeviceType(),
+      },
+
+      market: {
+        utmSource:
+          queryParams.get("utm_source") ||
+          "DIRECT",
+
+        campaign:
+          queryParams.get(
+            "utm_campaign"
+          ) || "UNKNOWN",
+      },
+
+      referrer: {
+        url:
+          window.location.origin +
+          window.location.pathname,
+
+        referrer:
+          document.referrer || "DIRECT",
+      },
+
+      promotion: {
+        promotionId: 45,
+        promotionName:
+          "Bagels & Shamer",
+      },
+    };
+
+    await axios.post(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/PromotionEvent",
+      payload,
+      {
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.log(
+      "Promotion Tracking Error:",
+      error
+    );
+  }
+};
+ 
+const handleClaimFreeBagel = async () => {
+  await addToCart({
+    ...freeBagelPromo,
+    price: 0,
+    isPromoItem: true,
+  });
+
+  await capturePromotionEvent("PROMOTION_FREE_BAGEL_CLAIMED");
+  sessionStorage.setItem("freeBagelClaimed", "true");
+};
+
+
   // -----------------------------------
   // INITIAL SETUP
   // -----------------------------------
@@ -662,50 +832,24 @@ const updateCart = (newCart) => {
 
 
   //SaveCartonExit
-  // const saveCartOnExit = () => {
-  //   if (cartRef.current.length === 0) return;
-
-  //   const payload = {
-  //     cartItemId: crypto.randomUUID(),
-  //     userName: sessionStorage.getItem("username"),
-  //     isCartActive: true,
-  //     createdDate: new Date().toISOString(),
-  //     breakfastItems: cartRef.current,
-  //   };
-
-  //   navigator.sendBeacon(
-  //     "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
-  //     new Blob([JSON.stringify(payload)], {
-  //       type: "application/json",
-  //     })
-  //   );
-  // };
-
   const saveCartOnExit = () => {
-  if (cartRef.current.length === 0) return;
+    if (cartRef.current.length === 0) return;
 
-  const payload = {
-    cartItemId: crypto.randomUUID(),
-    userName: sessionStorage.getItem("username"),
-    isCartActive: true,
-    createdDate: new Date().toISOString(),
-    breakfastItems: cartRef.current,
+    const payload = {
+      cartItemId: crypto.randomUUID(),
+      userName: sessionStorage.getItem("username"),
+      isCartActive: true,
+      createdDate: new Date().toISOString(),
+      cartItems: cartRef.current,
+    };
+
+    navigator.sendBeacon(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
+      new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      })
+    );
   };
-
-  fetch(
-    "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-      keepalive: true,
-    }
-  ).catch((err) =>
-    console.error("Save Cart failed", err)
-  );
-};
   // -----------------------------------
   // EXIT TRACKING
   // -----------------------------------
@@ -721,120 +865,88 @@ const updateCart = (newCart) => {
     let currentCounter = Number(sessionStorage.getItem(EVENT_COUNTER_KEY)) || 4;
     let eventSequence;
 
-  if (savedEventMap["EXIT_PAGE"] !== undefined) {
-    eventSequence = savedEventMap["EXIT_PAGE"];
-  } else {
-    eventSequence = currentCounter;
-    savedEventMap["EXIT_PAGE"] = eventSequence;
-    currentCounter++;
+    if (savedEventMap["EXIT_PAGE"] !== undefined) {
+      eventSequence = savedEventMap["EXIT_PAGE"];
+    } else {
+      eventSequence = currentCounter;
+      savedEventMap["EXIT_PAGE"] = eventSequence;
+      currentCounter++;
 
-    try {
-      sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
-      sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
-    } catch (e) {
-      // Fail silently to prioritize delivery execution
+      try {
+        sessionStorage.setItem(EVENT_MAP_KEY, JSON.stringify(savedEventMap));
+        sessionStorage.setItem(EVENT_COUNTER_KEY, currentCounter);
+      } catch (e) {
+        // Fail silently to prioritize delivery execution
+      }
     }
-  }
 
-  const payload = {
-    eventName: "EXIT_PAGE",
-    page: targetPage,
-    eventSequence,
-    eventTimestamp: new Date().toISOString(),
-    customerId: "",
-    sessionId,
-    device: {
-      browser: getBrowser(),
-      operatingSystem: getOperatingSystem(),
-      deviceType: getDeviceType(),
-    },
-    market: {
-      utmSource: queryParams.get("utm_source") || "DIRECT",
-      campaign: queryParams.get("utm_campaign") || "UNKNOWN",
-    },
-    referrer: {
-      url: window.location.origin + window.location.pathname,
-      referrer: document.referrer || "DIRECT",
-    },
+    const payload = {
+      eventName: "EXIT_PAGE",
+      page: targetPage,
+      eventSequence,
+      eventTimestamp: new Date().toISOString(),
+      customerId: "",
+      sessionId,
+      device: {
+        browser: getBrowser(),
+        operatingSystem: getOperatingSystem(),
+        deviceType: getDeviceType(),
+      },
+      market: {
+        utmSource: queryParams.get("utm_source") || "DIRECT",
+        campaign: queryParams.get("utm_campaign") || "UNKNOWN",
+      },
+      referrer: {
+        url: window.location.origin + window.location.pathname,
+        referrer: document.referrer || "DIRECT",
+      },
+    };
+
+    navigator.sendBeacon(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events",
+      new Blob([JSON.stringify(payload)], { type: "application/json" })
+    );
   };
 
-  // Keepalive used here as well for reliable JSON transmission on exit
-  fetch("https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/Events", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-    keepalive: true,
-  }).catch((err) => console.error("Exit tracking failed", err));
-};
-
-// KEEP TRACK OF UPDATED CURRENT PAGE REF WITHOUT REMOUNTING LISTENERS
-const currentPageRef = useRef(currentPage);
-const hasTrackedExit = useRef(false);
-
-useEffect(() => {
-  currentPageRef.current = currentPage;
-}, [currentPage]);
-
-// CLEANED UP: SINGLE TAB LIFE-CYCLE INTERCEPTOR
-useEffect(() => {
-  const handleExitTrigger = () => {
-    if (!hasTrackedExit.current) {
-      hasTrackedExit.current = true;
-      trackExit(currentPageRef.current);
-    }
-  };
-
-  const handleVisibilityChange = () => {
-    if (document.visibilityState === "hidden") {
-      handleExitTrigger();
-    } else if (document.visibilityState === "visible") {
-      hasTrackedExit.current = false; // Reset if user returns to tab
-    }
-  };
-
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-  window.addEventListener("pagehide", handleExitTrigger);
-
-  return () => {
-    document.removeEventListener("visibilitychange", handleVisibilityChange);
-    window.removeEventListener("pagehide", handleExitTrigger);
-  };
-}, []);
   // KEEP TRACK OF UPDATED CURRENT PAGE REF WITHOUT REMOUNTING LISTENERS
-  // const currentPageRef = useRef(currentPage);
-  // const hasTrackedExit = useRef(false);
+  const currentPageRef = useRef(currentPage);
+  const hasTrackedExit = useRef(false);
 
-  // useEffect(() => {
-  //   currentPageRef.current = currentPage;
-  // }, [currentPage]);
+  useEffect(() => {
+    currentPageRef.current = currentPage;
+  }, [currentPage]);
 
-  // // COMBINED TAB LIFE-CYCLE INTERCEPTOR
-  // useEffect(() => {
-  //   const handleExitTrigger = () => {
-  //     if (!hasTrackedExit.current) {
-  //       trackExit(currentPageRef.current);
-  //       hasTrackedExit.current = true;
-  //     }
-  //   };
+  // COMBINED TAB LIFE-CYCLE INTERCEPTOR
+  useEffect(() => {
+    const handleExitTrigger = () => {
+      if (!hasTrackedExit.current) {
+        trackExit(currentPageRef.current);
+        hasTrackedExit.current = true;
+      }
+    };
 
-  //   const handleVisibilityChange = () => {
-  //     if (document.visibilityState === "hidden") {
-  //       handleExitTrigger();
-  //     } else if (document.visibilityState === "visible") {
-  //       hasTrackedExit.current = false; // Reset if user returns to tab
-  //     }
-  //   };
+    
 
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   window.addEventListener("pagehide", handleExitTrigger);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        handleExitTrigger();
+      } else if (document.visibilityState === "visible") {
+        hasTrackedExit.current = false; // Reset if user returns to tab
+      }
+    };
 
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //     window.removeEventListener("pagehide", handleExitTrigger);
-  //   };
-  // }, []);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleExitTrigger);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleExitTrigger);
+    };
+  }, []);
+
+
+
+  
 
   // INITIAL SETUP
   // useEffect(() => {
@@ -883,7 +995,7 @@ useEffect(() => {
   //     //           ]
   //     // }
   //     const response = await axios.put(url, Payload)
-  //     updateCart(updatedCart);
+  //     setCart(updatedCart);
   //   } else {
   //     const cartPayload = {
   //       "itemId": item.id,
@@ -896,7 +1008,7 @@ useEffect(() => {
   //     }
 
 
-  //     updateCart([...cart, cartPayload]);
+  //     setCart([...cart, cartPayload]);
 
   //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart";
   //     const Payload = {
@@ -913,40 +1025,39 @@ useEffect(() => {
   // };
 
   const addToCart = async (item) => {
-    const existingItem = cart.find(
-      (cartItem) => cartItem.itemId === item.id
-    );
+  const existingItem = cart.find(
+    (cartItem) => cartItem.itemId === item.id
+  );
 
-    if (existingItem) {
-      const updatedCart = cart.map((cartItem) =>
-        cartItem.itemId === item.id
-          ? {
+  if (existingItem) {
+    const updatedCart = cart.map((cartItem) =>
+      cartItem.itemId === item.id
+        ? {
             ...cartItem,
             quantity: cartItem.quantity + 1,
-            itemtotalPrice:
+            itemTotalPrice:
               (cartItem.quantity + 1) * cartItem.price,
           }
-          : cartItem
-      );
+        : cartItem
+    );
 
-      updateCart(updatedCart);
-    } else {
+    setCart(updatedCart);
+  } else {
+    const cartPayload = {
+      itemId: item.id,
+      itemName: item.name,
+      itemImg: item.image,
+      price: item.price,
+      quantity: 1,
+      itemTotalPrice: item.totalPrice,
+      itemDiscount: (Math.random() * 25).toFixed(2),
+    };
 
-      const cartPayload = {
-        itemId: item.id,
-        itemName: item.name,
-        itemImg: item.image,
-        price: item.price,
-        quantity: 1,
-        itemtotalPrice: item.price,
-        itemDiscount: (Math.random() * 25).toFixed(2),
-      };
+    setCart([...cart, cartPayload]);
+  }
 
-      updateCart([...cart, cartPayload]);
-    }
-    await captureEvent("ADD_TO_CART")
-  };
-
+  await captureEvent("ADD_TO_CART");
+};
   // -----------------------------------
   // ADD UPSELL ITEM TO CART
   // SEPARATE FROM addToCart SO IT FIRES
@@ -963,9 +1074,9 @@ useEffect(() => {
   //         : cartItem,
   //     );
 
-  //     updateCart(updatedCart);
+  //     setCart(updatedCart);
   //   } else {
-  //     updateCart([...cart, { ...item, quantity: 1 }]);
+  //     setCart([...cart, { ...item, quantity: 1 }]);
   //   }
 
   //   await captureEvent("ADD_UPSELL_TO_CART");
@@ -981,13 +1092,13 @@ useEffect(() => {
           ? {
             ...cartItem,
             quantity: cartItem.quantity + 1,
-            itemtotalPrice:
+            itemTotalPrice:
               (cartItem.quantity + 1) * cartItem.price,
           }
           : cartItem
       );
 
-      updateCart(updatedCart);
+      setCart(updatedCart);
     } else {
       const cartPayload = {
         itemId: item.id,
@@ -995,11 +1106,11 @@ useEffect(() => {
         itemImg: item.image,
         price: item.price,
         quantity: 1,
-        itemtotalPrice: item.price,
+        itemTotalPrice: item.totalPrice,
         itemDiscount: (Math.random() * 25).toFixed(2),
       };
 
-      updateCart([...cart, cartPayload]);
+      setCart([...cart, cartPayload]);
     }
 
     await captureEvent("ADD_UPSELL_TO_CART");
@@ -1014,12 +1125,12 @@ useEffect(() => {
         ? {
           ...item,
           quantity: item.quantity + 1,
-          itemtotalPrice: (item.quantity + 1) * item.price,
+          itemTotalPrice: (item.quantity + 1) * item.price,
         }
         : item
     );
 
-    updateCart(updatedCart);
+    setCart(updatedCart);
   };
 
   // -----------------------------------
@@ -1033,13 +1144,13 @@ useEffect(() => {
           ? {
             ...item,
             quantity: item.quantity - 1,
-            itemtotalPrice: (item.quantity - 1) * item.price,
+            itemTotalPrice: (item.quantity - 1) * item.price,
           }
           : item
       )
       .filter((item) => item.quantity > 0);
 
-    updateCart(updatedCart);
+    setCart(updatedCart);
   };
 
   // -----------------------------------
@@ -1050,7 +1161,7 @@ useEffect(() => {
     // const updatedCart = cart.filter((item) => item.id !== id);
     const updatedCart = cart.filter((item) => item.itemId !== id);
 
-    updateCart(updatedCart);
+    setCart(updatedCart);
 
     await captureEvent("REMOVE_FROM_CART");
   };
@@ -1074,8 +1185,13 @@ useEffect(() => {
       userName: sessionStorage.getItem("username"),
       isCartActive: true,
       createdDate: new Date().toISOString(),
-      breakfastItems: cart,
+      cartItems: cart,
     };
+  console.log("CART", cart);
+
+  // Add this
+  console.log("PAYLOAD JSON");
+  console.log(JSON.stringify(payload, null, 2));
     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart"
     await axios.post(url, payload);
   };
@@ -1117,8 +1233,12 @@ useEffect(() => {
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("latestOrder", JSON.stringify(orderPayload));
+    
     await saveCart()
-    await captureEvent("PROCEED_TO_CHECKOUT", cart);
+    if (sessionStorage.getItem("freeBagelClaimed") === "true") {
+    await capturePromotionEvent("PROMOTION_FREE_BAGEL_REDEEMED");
+    }
+    await captureEvent("PROCEED_TO_CHECKOUT");
 
     navigate(`/checkout${queryString}`);
   };
@@ -1133,8 +1253,7 @@ useEffect(() => {
             <>
               <Route
                 path="/login"
-                element={<Login captureEvent={captureEvent} setUserNameExists={setUserNameExists} justLoggedIn={justLoggedIn} />}
-              />
+                element={<Login cart={cart} />} />
 
               <Route
                 path="*"
@@ -1146,7 +1265,7 @@ useEffect(() => {
 
               {/* LOCATIONS */}
 
-              <Route path="/locations" element={<Locations />} />
+              <Route path="/locations" element={<Locations hasCartItems={cart.length > 0} />} />
 
               {/* HOME */}
 
@@ -1256,6 +1375,12 @@ useEffect(() => {
                                 await captureEvent("PICKUP_ASAP_SELECTED");
 
                                 setShowPickupModal(false);
+
+                                setTimeout(async () => {
+    setShowPromotionModal(true);
+
+    await captureEvent("PROMOTION_SHOWN");
+  }, 1500);
                               }}
                             >
                               ASAP
@@ -1277,6 +1402,42 @@ useEffect(() => {
                         </div>
                       </div>
                     )}
+
+                    {showPromotionModal && (
+  <div className="modalOverlay">
+    <div className="promotionModal">
+      <h2>🎉 Special Offer</h2>
+
+      <p>
+        Get 20% OFF on your order today.
+      </p>
+
+      <div className="couponBox">
+        {PROMO_CODE}
+      </div>
+
+      <button
+        className="copyCouponBtn"
+        onClick={async () => {
+          navigator.clipboard.writeText(PROMO_CODE);
+
+          await captureEvent("PROMOTION_COUPON_COPIED");
+          
+          setShowPromotionModal(false);
+        }}
+      >
+        Copy Coupon
+      </button>
+
+      <button
+        className="closePromoBtn"
+        onClick={() => setShowPromotionModal(false)}
+      >
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+)}
 
                     {/* NAVBAR */}
 
@@ -1326,13 +1487,16 @@ useEffect(() => {
                       </nav>
                     )}
 
+
                     <section className="menuSection">
+
+                      <div className = "sectionEach">
                       <p className="menuSub">OUR MENU</p>
 
                       <h2 className="menuTitle">Today's specials</h2>
 
                       <div className="cardGrid">
-                        {menuItems.map((item) => (
+                        {todaysSpecials.map((item) => (
                           <div className="card" key={item.id}>
                             <img src={item.image} alt={item.name} />
 
@@ -1340,7 +1504,7 @@ useEffect(() => {
                               <div className="cardTop">
                                 <h3>{item.name}</h3>
 
-                                <span>${item.price.toFixed(2)}</span>
+                                <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
                               </div>
 
                               <button onClick={() => addToCart(item)}>
@@ -1349,6 +1513,90 @@ useEffect(() => {
                             </div>
                           </div>
                         ))}
+                      </div>
+                      </div>
+
+                      <div className="promoSection">
+  <h2 className="promoTitle">🎁 First Order Reward</h2>
+
+  <div className="promoCard">
+    <img
+      src={freeBagelPromo?.image}
+      alt={freeBagelPromo?.name}
+    />
+
+    <div className="promoContent">
+      <h3>FREE Bagel for First-Time Customers</h3>
+
+      <p>
+        Add more than 2 items to your cart and unlock a FREE
+        Classic Bagel on your first order.
+      </p>
+
+      <div className="promoItem">
+        <strong>{freeBagelPromo?.name}</strong>
+        <span>FREE</span>
+      </div>
+
+    <button
+  disabled={totalItems < 3}
+   onClick={handleClaimFreeBagel}
+>
+  {totalItems < 3
+    ? `Add ${3 - totalItems} more item(s)`
+    : "Claim Free Bagel"}
+</button>
+    </div>
+  </div>
+</div>
+                      
+                      <div className="sectionEachh">
+                       <h2 className="itemsTitle">Lunch Classics</h2>
+                       {lunchClassics.length > 0 && (
+                        <div className="cardGrid">
+                          {lunchClassics.map((item) => (
+                            <div className="card" key={item.id}>
+                              <img src={item.image} alt={item.name} />
+
+                              <div className="cardContent">
+                                <div className="cardTop">
+                                  <h3>{item.name}</h3>
+                                  <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                                </div>
+
+                                <button onClick={() => addToCart(item)}>
+                                  Add to cart
+                                </button>
+                              </div>  
+                            </div>
+                          ))}
+                        </div>
+                       )
+                       }
+                      </div>
+  <div className="sectionEachh">
+                       <h2 className="itemsTitle">Classic Bevarages</h2>
+                       {pairWithItems.length > 0 && (
+                        <div className="cardGrid">
+                          {pairWithItems.map((item) => (
+                            <div className="card" key={item.id}>
+                              <img src={item.image} alt={item.name} />
+
+                              <div className="cardContent">
+                                <div className="cardTop">
+                                  <h3>{item.name}</h3>
+                                  <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                                </div>
+
+                                <button onClick={() => addToCart(item)}>
+                                  Add to cart
+                                </button>
+                              </div>  
+                            </div>
+                          ))}
+                        </div>
+                       )
+                       }
                       </div>
                     </section>
                   </>
@@ -1385,42 +1633,7 @@ useEffect(() => {
                         ) : (
                           <>
                             <div className="cartItems">
-                              {/* {cartData.breakfastItems.map((item) => (
-                                <div className="cartItem" key={item.id}>
-                                  <div className="cartLeft">
-                                    <img src={item.image} alt={item.name} />
-
-                                    <div>
-                                      <h3>{item.name}</h3>
-
-                                      <p>${item.price.toFixed(2)} each</p>
-                                    </div>
-                                  </div>
-
-                                  <div className="cartRight">
-                                    <div className="quantityBox">
-                                      <button onClick={() => decreaseQuantity(item.id)}>
-                                        -
-                                      </button>
-
-                                      <span>{item.quantity}</span>
-
-                                      <button onClick={() => increaseQuantity(item.id)}>
-                                        +
-                                      </button>
-                                    </div>
-
-                                    <h3>${(item.price * item.quantity).toFixed(2)}</h3>
-
-                                    <button
-                                      className="removeBtn"
-                                      onClick={() => removeItem(item.id)}
-                                    >
-                                      Remove
-                                    </button>
-                                  </div>
-                                </div>
-                              ))} */}
+                              
 
                               {cart.map((item) => (
                                 <div className="cartItem" key={item.itemId}>
@@ -1429,7 +1642,7 @@ useEffect(() => {
 
                                     <div>
                                       <h3>{item.itemName}</h3>
-                                      <p>${item.price.toFixed(2)} each</p>
+                                      <p>${item.price ? item.price.toFixed(2) : "0.00"} each</p>
                                     </div>
                                   </div>
 
@@ -1446,7 +1659,7 @@ useEffect(() => {
                                       </button>
                                     </div>
 
-                                    <h3>${item.itemtotalPrice.toFixed(2)}</h3>
+                                    <h3>${item.itemTotalPrice ? item.itemTotalPrice.toFixed(2) : "0.00"}</h3>
 
                                     <button
                                       className="removeBtn"
@@ -1551,7 +1764,33 @@ useEffect(() => {
                               );
                             })}
                           </select>
+
                         </div>
+
+<div className="couponContainer">
+  <input
+    type="text"
+    className="couponInput"
+    placeholder="Enter coupon code"
+    value={couponCode}
+    onChange={(e) => setCouponCode(e.target.value)}
+  />
+
+  <button
+    className="couponBtn"
+    onClick={async () => {
+  if (couponCode.trim().toUpperCase() === "SUNRISE20") {
+    await captureEvent("PROMOTION_COUPON_REDEEMED");
+    alert("Coupon Applied!");
+  } else {
+    alert("Invalid Coupon");
+  }
+}}
+  >
+    Add Coupon
+  </button>
+</div>
+
 
                         <button
                           className="shoppingBtn"
@@ -1619,7 +1858,7 @@ useEffect(() => {
                             onClick={() => {
                               setShowOrderModal(false);
 
-                              updateCart([]);
+                              setCart([]);
 
                               navigate(`/${queryString}`);
                             }}
@@ -1634,12 +1873,12 @@ useEffect(() => {
                       subtotal={subtotal}
                       selectedBranch={selectedBranch}
                       handleDone={() => {
-                        updateCart([]);
+                        setCart([]);
 
                         navigate(`/${queryString}`);
                       }}
                       captureEvent={captureEvent}
-                      updateCart={updateCart}
+                      setCart={setCart}
                     />
 
                   </>
@@ -1659,4 +1898,3 @@ useEffect(() => {
 }
 
 export default App;
-

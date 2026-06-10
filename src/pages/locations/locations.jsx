@@ -1,6 +1,6 @@
 
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./locations.css";
 import axios from "axios";
 
@@ -78,8 +78,9 @@ const branches = [
 ];
 
 
-const Locations = () => {
+const Locations = ({hasCartItems}) => {
   const [search, setSearch] = useState("");
+  const [showCartModal, setShowCartModal] = useState(false);
 
   const filteredBranches = branches.filter((branch) =>
     branch.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -242,9 +243,46 @@ const Locations = () => {
     }
   };
 
+  useEffect(() => {
+  if (hasCartItems) {
+    setShowCartModal(true);
+  }
+}, [hasCartItems]);
+
   return (
     <div className="locationPage">
       {/* NAVBAR */}
+
+     {showCartModal && (
+  <div className="modalOverlay">
+    <div className="modalBox">
+      <h2>You have items in your cart</h2>
+      <p>Do you want to continue to your cart or keep shopping?</p>
+
+      <div className="modalActions">
+        <button
+          className="primaryBtn"
+          onClick={() => {
+            setShowCartModal(false);
+            window.location.href = "/cart";
+          }}
+        >
+          Go to Cart
+        </button>
+
+        <button
+          className="secondaryBtn"
+          onClick={() => {
+            setShowCartModal(false);
+            window.location.href = "/";
+          }}
+        >
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       <nav className="navbar">
         <div>

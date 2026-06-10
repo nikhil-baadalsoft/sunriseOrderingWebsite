@@ -97,9 +97,9 @@ button {
     rgba(255, 90, 0, 0.18);
 }
  
-
-
-
+ 
+ 
+ 
 /* =========================
    CART BUTTON
 ========================= */
@@ -1182,10 +1182,203 @@ button {
   cursor: pointer;
 }
  
+ 
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+ 
+/* Promotion Modal */
+ 
+.promotionModal {
+  width: 90%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  animation: popupFade 0.3s ease;
+}
+ 
+.promotionModal h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+}
+ 
+.promotionModal p {
+  margin: 0 0 20px;
+  color: #666;
+  line-height: 1.5;
+  font-size: 15px;
+}
+ 
+/* Coupon Box */
+ 
+.couponBox {
+  border: 2px dashed #ff6b00;
+  background: #fff7f1;
+  color: #ff6b00;
+  font-size: 22px;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+ 
+/* Buttons */
+ 
+.copyCouponBtn,
+.closePromoBtn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+ 
+.copyCouponBtn {
+  background: #ff6b00;
+  color: white;
+  margin-bottom: 12px;
+}
+ 
+.copyCouponBtn:hover {
+  transform: translateY(-1px);
+}
+ 
+.closePromoBtn {
+  background: #f4f4f4;
+  color: #333;
+}
+ 
+.closePromoBtn:hover {
+  background: #e8e8e8;
+}
+ 
+/* Animation */
+ 
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+ 
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+ 
+.couponContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+ 
+.couponInput {
+  flex: 1;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+ 
+.couponInput:focus {
+  border-color: #ff6b00;
+}
+ 
+.couponBtn {
+  height: 44px;
+  padding: 5px;
+  border: none;
+  border-radius: 8px;
+  background: #ff6b00;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+  width: 120px;
+}
+ 
+.couponBtn:hover {
+  opacity: 0.9;
+}
+.promoSection {
+  margin: 2rem 0;
+}
+ 
+.promoCard {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: #fff8e8;
+  border: 2px solid #ffd166;
+}
+ 
+.promoCard img {
+  width: 220px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+ 
+.promoContent {
+  flex: 1;
+}
+ 
+.promoContent h3 {
+  margin-bottom: 0.5rem;
+}
+ 
+.promoContent p {
+  margin-bottom: 1rem;
+}
+ 
+.promoItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+ 
+.promoContent button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+ 
 /* =========================
    MOBILE
 ========================= */
+ @media (max-width: 600px) {
+  .couponContainer {
+    flex-direction: column;
+  }
  
+  .couponInput,
+  .couponBtn {
+    width: 100%;
+  }
+}
 @media (max-width: 700px) {
  
     .suggestionModal {
@@ -1194,35 +1387,35 @@ button {
   max-height: 80vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-
+ 
   /* Hide scrollbar */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
-
+ 
 .suggestionModal::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
+ 
 .suggestionTitle {
   font-size: 28px;
 }
-
+ 
 .suggestionGrid {
   grid-template-columns: 1fr;
 }
-
+ 
 .suggestionFooter {
   padding: 20px;
   position: sticky;
   bottom: 0;
   background: white;
 }
-
+ 
 .proceedBtn {
   width: 100%;
 }
-
+ 
 }
  
 /* =========================
@@ -1230,25 +1423,25 @@ button {
 ========================= */
  
 @media (max-width: 600px) {
-
+ 
     .navbar {
    display: flex;
    flex-direction: row;
    justify-content: space-between;
    
   }
-
+ 
   .logoText {
     margin-top: 50px;
     margin-bottom: 2px;
-  
+ 
   }
-
+ 
   .cartIconBtn {
     width: 48px;
     height: 48px;
   }
-
+ 
   .pickupModal h2 {
     font-size: 24px;
   }
@@ -1285,11 +1478,11 @@ button {
    justify-content: space-between;
    
   }
-
+ 
   .logoText {
     margin-top: 50px;
     margin-bottom: 2px;
-  
+ 
   }
   .cartLayout {
     grid-template-columns: 1fr;
@@ -1304,11 +1497,11 @@ button {
   max-height: 80vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-
+ 
   /* Hide scrollbar */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
-
+ 
   }
 }
  
@@ -1319,7 +1512,7 @@ button {
  
   .sidebar {
     width: 100%;
-    min-width: 100%; 
+    min-width: 100%;
     border-right: none;
     border-bottom: 1px solid #ececec;
   }
@@ -1395,12 +1588,28 @@ button {
 }
  
 @media (max-width: 900px) {
-
+ 
   .deliveryCard {
     position: static;
   }
  
   .deliveryCard h2 {
     font-size: 30px;
+  }
+}
+ 
+@media (max-width: 768px) {
+  .promotionModal {
+    width: 92%;
+    padding: 20px;
+  }
+ 
+  .promotionModal h2 {
+    font-size: 24px;
+  }
+ 
+  .couponBox {
+    font-size: 18px;
+    padding: 12px;
   }
 }
