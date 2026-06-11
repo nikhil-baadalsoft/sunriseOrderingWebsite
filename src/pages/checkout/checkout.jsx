@@ -28,7 +28,7 @@ function Checkout({
       console.log("CartId", cartid)
       if (cartid) {
         const payload = {
-          "cartItemId": cartid,
+          "cartId": cartid,
           "isCartActive": false
         }
         console.log("Payload", payload)

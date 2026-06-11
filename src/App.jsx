@@ -266,6 +266,7 @@ function App() {
 
   const [cart, setCart] = useState([]);
   const [savedCartItems, setSavedCartItems] = useState([]);
+  const [trackcheckoutbtn, settrackedcheckbtn] = useState(false);
 
   const cartRef = useRef(cart);
   const fetchCartData = async () => {
@@ -790,7 +791,9 @@ function App() {
   // EXIT TRACKING
   // -----------------------------------
   const trackExit = (targetPage) => {
-    saveCartOnExit()
+    if (trackcheckoutbtn == true) {
+      saveCartOnExit()
+    }
     let savedEventMap = {};
     try {
       savedEventMap = JSON.parse(sessionStorage.getItem(EVENT_MAP_KEY)) || {};
@@ -1061,10 +1064,10 @@ function App() {
       const savedIds = savedCartItems.map(item => item.itemId);
       const newItems = cart.filter(item => !savedIds.includes(item.itemId));
 
-      if (newItems.length === 0) {
-        console.log("No new items, skipping");
-        return;
-      }
+      // if (newItems.length === 0) {
+      //   console.log("No new items, skipping");
+      //   return;
+      // }
 
       const cartPayload = {
         cartItemId: cartItemId,
@@ -1099,6 +1102,7 @@ function App() {
   };
 
   const handlePayment = async () => {
+    settrackedcheckbtn(true);
     if (!deliveryDetails.fullName || !deliveryDetails.phone) {
       return;
     }
