@@ -1,9 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-
-
 import "react-toastify/dist/ReactToastify.css";
 import Locations from "./pages/locations/locations";
 import Checkout from "./pages/checkout/checkout";
@@ -294,52 +291,7 @@ function App() {
       console.log("Error", error.message);
     }
   };
-  //   const fetchCartData = async () => {
-  //   try {
-  //     const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
 
-  //     const response = await axios.get(url);
-
-  //     console.log(response.data);
-
-  //     if (response.data && response.data.length > 0) {
-  //       const cartData = response.data[0];
-
-  //       sessionStorage.setItem("CartId", cartData.cartItemId);
-
-  //       setCart(cartData.breakfastItems || []);
-
-
-  //     }
-
-  //   } catch (error) {
-  //     console.log("Error", error.message);
-  //   }
-  // };
-  //  const fetchCartData = async () => {
-  //     try {
-  //       const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
-
-  //       const response = await axios.get(url);
-
-  //       console.log("Getting UserCart", response.data);
-
-  //       if (response.data && response.data.length > 0) {
-  //         sessionStorage.setItem(
-  //           "CartId",
-  //           response.data[0].cartItemId
-  //         );
-
-  //         const allItems = response.data.flatMap(
-  //           (cart) => cart.breakfastItems || []
-  //         );
-
-  //         setCartData(allItems);
-  //       }
-  //     } catch (error) {
-  //       console.log("Error", error.message);
-  //     }
-  //   };
   useEffect(() => {
     fetchCartData()
   }, [])
@@ -814,24 +766,6 @@ function App() {
   };
 
 
-  // -----------------------------------
-  // INITIAL SETUP
-  // -----------------------------------
-
-  // useEffect(() => {
-
-  //   // CLEAR OLD SESSION DATA ON EVERY LOAD
-  //   // ENSURES COUNTER ALWAYS STARTS FRESH
-  //   // PREVENTS STALE DATA FROM PREVIOUS TEST RUNS
-
-  //   sessionStorage.clear();
-
-  //   // NO customerId — NO LOGIN SYSTEM
-  //   // NO COUNTER INIT — DEFAULT 4 HANDLED
-  //   // INSIDE captureEvent VIA || 4
-
-  // }, []);
-
 
   //SaveCartonExit
   const saveCartOnExit = () => {
@@ -948,84 +882,6 @@ function App() {
 
 
 
-
-
-  // INITIAL SETUP
-  // useEffect(() => {
-  //   sessionStorage.clear();
-  // }, []);
-
-  // -----------------------------------
-  // CART ACTIONS
-  // -----------------------------------
-
-  // const addToCart = async (item) => {
-  //   console.log("ITEM", item)
-  //   const existingItem = cart.find((cartItem) => cartItem.itemId === item.id);
-
-  //   if (existingItem) {
-  //     const updatedCart = cart.map((cartItem) =>
-  //       cartItem.itemId === item.id
-  //         ? {
-  //           ...cartItem,
-  //           quantity: cartItem.quantity + 1,
-  //           subtotal: (cartItem.quantity + 1) * cartItem.price,
-  //         }
-  //         : cartItem
-  //     );
-  //     const Payload = {
-  //       userName: sessionStorage.getItem("username"),
-  //       itemId: item.id,
-  //       quantityIncrement: 1
-  //     }
-  //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/UpdateCart"
-  //     // {
-  //     //   "cartItemId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  //     //     "userName": "string",
-  //     //       "isCartActive": true,
-  //     //         "modifiedDate": "2026-06-08T15:38:08.646Z",
-  //     //           "cartItems": [
-  //     //             {
-  //     //               "itemId": 0,
-  //     //               "itemName": "string",
-  //     //               "itemImg": "string",
-  //     //               "quantity": 0,
-  //     //               "price": 0,
-  //     //               "itemTotalPrice": 0,
-  //     //               "promotionalDiscount": "string"
-  //     //             }
-  //     //           ]
-  //     // }
-  //     const response = await axios.put(url, Payload)
-  //     setCart(updatedCart);
-  //   } else {
-  //     const cartPayload = {
-  //       "itemId": item.id,
-  //       "itemName": item.name,
-  //       "itemImg": item.image,
-  //       "price": item.price,
-  //       "quantity": 1,
-  //       "itemtotalPrice": item.price,
-  //       "itemDiscount": JSON.stringify((Math.random() * 25).toFixed(2))
-  //     }
-
-
-  //     setCart([...cart, cartPayload]);
-
-  //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart";
-  //     const Payload = {
-  //       "cartItemId": crypto.randomUUID(),
-  //       "userName": sessionStorage.getItem("username"),
-  //       "isCartActive": true,
-  //       "createdDate": new Date().toISOString(),
-  //       "cartItems": [cartPayload]
-  //     }
-  //     const response = await axios.post(url, Payload);
-  //   }
-
-  //   await captureEvent("ADD_TO_CART");
-  // };
-
   const addToCart = async (item) => {
     const existingItem = cart.find(
       (cartItem) => cartItem.itemId === item.id
@@ -1060,29 +916,7 @@ function App() {
 
     await captureEvent("ADD_TO_CART");
   };
-  // -----------------------------------
-  // ADD UPSELL ITEM TO CART
-  // SEPARATE FROM addToCart SO IT FIRES
-  // "ADD_UPSELL_TO_CART" — EVENT SEQUENCE 6
-  // -----------------------------------
 
-  // const addUpsellToCart = async (item) => {
-  //   const existingItem = cart.find((cartItem) => cartItem.id === item.id);
-
-  //   if (existingItem) {
-  //     const updatedCart = cart.map((cartItem) =>
-  //       cartItem.id === item.id
-  //         ? { ...cartItem, quantity: cartItem.quantity + 1 }
-  //         : cartItem,
-  //     );
-
-  //     setCart(updatedCart);
-  //   } else {
-  //     setCart([...cart, { ...item, quantity: 1 }]);
-  //   }
-
-  //   await captureEvent("ADD_UPSELL_TO_CART");
-  // };
   const addUpsellToCart = async (item) => {
     const existingItem = cart.find(
       (cartItem) => cartItem.itemId === item.id
@@ -1220,49 +1054,49 @@ function App() {
   // };
 
   const saveCart = async () => {
-  const cartItemId = sessionStorage.getItem("CartId");
+    const cartItemId = sessionStorage.getItem("CartId");
 
-  if (cartItemId) {
-    
-    const savedIds = savedCartItems.map(item => item.itemId);
-    const newItems = cart.filter(item => !savedIds.includes(item.itemId));
+    if (cartItemId) {
 
-    if (newItems.length === 0) {
-      console.log("No new items, skipping");
-      return;
+      const savedIds = savedCartItems.map(item => item.itemId);
+      const newItems = cart.filter(item => !savedIds.includes(item.itemId));
+
+      if (newItems.length === 0) {
+        console.log("No new items, skipping");
+        return;
+      }
+
+      const cartPayload = {
+        cartItemId: cartItemId,
+        userName: sessionStorage.getItem("username"),
+        isCartActive: true,
+        modifiedDate: new Date().toISOString(),
+        cartItems: cart
+      };
+
+      console.log("UPDATE payload:", cartPayload);
+      await axios.put(
+        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/UpdateCart",
+        cartPayload
+      );
+
+    } else {
+
+      const cartPayload = {
+        cartItemId: crypto.randomUUID(),
+        userName: sessionStorage.getItem("username"),
+        isCartActive: true,
+        createdDate: new Date().toISOString(),
+        cartItems: cart
+      };
+
+      console.log("CREATE payload:", cartPayload);
+      await axios.post(
+        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
+        cartPayload
+      );
     }
-
-    const cartPayload = {
-      cartItemId: cartItemId,
-      userName: sessionStorage.getItem("username"),
-      isCartActive: true,
-      modifiedDate: new Date().toISOString(),
-      cartItems: cart
-    };
-
-    console.log("UPDATE payload:", cartPayload);
-    await axios.put(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/UpdateCart",
-      cartPayload
-    );
-
-  } else {
-   
-    const cartPayload = {
-      cartItemId: crypto.randomUUID(),
-      userName: sessionStorage.getItem("username"),
-      isCartActive: true,
-      createdDate: new Date().toISOString(),
-      cartItems: cart
-    };
-
-    console.log("CREATE payload:", cartPayload);
-    await axios.post(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
-      cartPayload
-    );
-  }
-};
+  };
 
   const handlePayment = async () => {
     if (!deliveryDetails.fullName || !deliveryDetails.phone) {
@@ -1925,9 +1759,7 @@ function App() {
                             className="doneBtn"
                             onClick={() => {
                               setShowOrderModal(false);
-
                               setCart([]);
-
                               navigate(`/${queryString}`);
                             }}
                           >
