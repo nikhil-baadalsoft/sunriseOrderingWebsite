@@ -268,78 +268,80 @@ function App() {
 
 
   const [cart, setCart] = useState([]);
- 
+  const [savedCartItems, setSavedCartItems] = useState([]);
+
   const cartRef = useRef(cart);
   const fetchCartData = async () => {
-  try {
-    const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
+    try {
+      const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
 
-    const response = await axios.get(url);
+      const response = await axios.get(url);
 
-    console.log(response.data);
+      console.log("CartItems", response.data);
 
-    if (response.data && response.data.length > 0) {
-      const allItems = response.data.flatMap(
-        (cart) => cart.breakfastItems || []
-      );
+      if (response.data && response.data.length > 0) {
+        const allItems = response.data.flatMap(
+          (cart) => cart.breakfastItems || []
+        );
 
-      // if cartId is same for all, you can safely take first
-      sessionStorage.setItem("CartId", response.data[0].cartItemId);
+        // if cartId is same for all, you can safely take first
+        sessionStorage.setItem("CartId", response.data[0].cartItemId);
 
-      setCart(allItems);
+        setSavedCartItems(allItems);
+        setCart(allItems);
+      }
+    } catch (error) {
+      console.log("Error", error.message);
     }
-  } catch (error) {
-    console.log("Error", error.message);
-  }
-};
-//   const fetchCartData = async () => {
-//   try {
-//     const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
+  };
+  //   const fetchCartData = async () => {
+  //   try {
+  //     const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
 
-//     const response = await axios.get(url);
+  //     const response = await axios.get(url);
 
-//     console.log(response.data);
+  //     console.log(response.data);
 
-//     if (response.data && response.data.length > 0) {
-//       const cartData = response.data[0];
+  //     if (response.data && response.data.length > 0) {
+  //       const cartData = response.data[0];
 
-//       sessionStorage.setItem("CartId", cartData.cartItemId);
+  //       sessionStorage.setItem("CartId", cartData.cartItemId);
 
-//       setCart(cartData.breakfastItems || []);
+  //       setCart(cartData.breakfastItems || []);
 
-      
-//     }
-    
-//   } catch (error) {
-//     console.log("Error", error.message);
-//   }
-// };
-//  const fetchCartData = async () => {
-//     try {
-//       const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
- 
-//       const response = await axios.get(url);
- 
-//       console.log("Getting UserCart", response.data);
- 
-//       if (response.data && response.data.length > 0) {
-//         sessionStorage.setItem(
-//           "CartId",
-//           response.data[0].cartItemId
-//         );
- 
-//         const allItems = response.data.flatMap(
-//           (cart) => cart.breakfastItems || []
-//         );
- 
-//         setCartData(allItems);
-//       }
-//     } catch (error) {
-//       console.log("Error", error.message);
-//     }
-//   };
+
+  //     }
+
+  //   } catch (error) {
+  //     console.log("Error", error.message);
+  //   }
+  // };
+  //  const fetchCartData = async () => {
+  //     try {
+  //       const url = `https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/GetCartItem?userName=${userNameExists}`;
+
+  //       const response = await axios.get(url);
+
+  //       console.log("Getting UserCart", response.data);
+
+  //       if (response.data && response.data.length > 0) {
+  //         sessionStorage.setItem(
+  //           "CartId",
+  //           response.data[0].cartItemId
+  //         );
+
+  //         const allItems = response.data.flatMap(
+  //           (cart) => cart.breakfastItems || []
+  //         );
+
+  //         setCartData(allItems);
+  //       }
+  //     } catch (error) {
+  //       console.log("Error", error.message);
+  //     }
+  //   };
   useEffect(() => {
-    fetchCartData() 
+    fetchCartData()
   }, [])
   useEffect(() => {
     cartRef.current = cart;
@@ -353,9 +355,9 @@ function App() {
 
   const [suggestedItems, setSuggestedItems] = useState([]);
 
-const [showPromotionModal, setShowPromotionModal] = useState(false);
-const PROMO_CODE = "SUNRISE20";
-const [couponCode, setCouponCode] = useState(PROMO_CODE);
+  const [showPromotionModal, setShowPromotionModal] = useState(false);
+  const PROMO_CODE = "SUNRISE20";
+  const [couponCode, setCouponCode] = useState(PROMO_CODE);
 
   const userNameExists = sessionStorage.getItem("username");
 
@@ -414,44 +416,44 @@ const [couponCode, setCouponCode] = useState(PROMO_CODE);
 
 
   const totalItems = cart.reduce(
-  (sum, item) => sum + item.quantity,
-  0
-);
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
   const todaysSpecials = menuItems.filter((item) => {
-  const name = item.name.toLowerCase();
+    const name = item.name.toLowerCase();
 
-  return (
-    name.includes("signature egg sandwich nosh box") ||
-    name.includes("classic egg sandwich nosh box") ||
-    name.includes("salmon & bagels") ||
-    name.includes("coffee or cold brew for the group")
+    return (
+      name.includes("signature egg sandwich nosh box") ||
+      name.includes("classic egg sandwich nosh box") ||
+      name.includes("salmon & bagels") ||
+      name.includes("coffee or cold brew for the group")
+    );
+  });
+  const lunchClassics = menuItems.filter((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      name.includes("lunch classics") ||
+      name.includes("individual meals") ||
+      name.includes("classic lunch sandwiches")
+    );
+  });
+
+
+  const pairWithItems = menuItems.filter((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      name.includes("coffee or cold brew for the group") ||
+      name.includes("orange juice, lemonade or tea lemonade") ||
+      name.includes("individual bottled beverages")
+    );
+  });
+
+  const freeBagelPromo = menuItems.find(
+    (item) => item.id === "2"
   );
-});
-const lunchClassics = menuItems.filter((item) => {
-  const name = item.name.toLowerCase();
-
-  return (
-    name.includes("lunch classics") ||
-    name.includes("individual meals")||
-    name.includes("classic lunch sandwiches")
-  );
-});
-
-
-const pairWithItems = menuItems.filter((item) => {
-  const name = item.name.toLowerCase();
-
-  return (
-    name.includes("coffee or cold brew for the group") ||
-    name.includes("orange juice, lemonade or tea lemonade") ||
-    name.includes("individual bottled beverages")
-  );
-});
-
-const freeBagelPromo = menuItems.find(
-  (item) => item.id === "2"
-);
 
   const beverageItems = menuItems.filter((item) => {
     const name = item.name.toLowerCase();
@@ -692,124 +694,124 @@ const freeBagelPromo = menuItems.find(
 
 
   const capturePromotionEvent = async (eventName) => {
-  try {
-    const savedEventMap =
-      JSON.parse(
-        sessionStorage.getItem(EVENT_MAP_KEY)
-      ) || {};
+    try {
+      const savedEventMap =
+        JSON.parse(
+          sessionStorage.getItem(EVENT_MAP_KEY)
+        ) || {};
 
-    let currentCounter =
-      Number(
-        sessionStorage.getItem(EVENT_COUNTER_KEY)
-      ) || 4;
+      let currentCounter =
+        Number(
+          sessionStorage.getItem(EVENT_COUNTER_KEY)
+        ) || 4;
 
-    let eventSequence;
+      let eventSequence;
 
-    if (
-      savedEventMap[
+      if (
+        savedEventMap[
         "PROMOTION_FREE_BAGEL_CLAIMED"
-      ] !== undefined
-    ) {
-      eventSequence =
+        ] !== undefined
+      ) {
+        eventSequence =
+          savedEventMap[
+          "PROMOTION_FREE_BAGEL_CLAIMED"
+          ];
+      } else {
+        eventSequence = currentCounter;
+
         savedEventMap[
           "PROMOTION_FREE_BAGEL_CLAIMED"
-        ];
-    } else {
-      eventSequence = currentCounter;
+        ] = eventSequence;
 
-      savedEventMap[
-        "PROMOTION_FREE_BAGEL_CLAIMED"
-      ] = eventSequence;
+        currentCounter++;
 
-      currentCounter++;
+        sessionStorage.setItem(
+          EVENT_MAP_KEY,
+          JSON.stringify(savedEventMap)
+        );
 
-      sessionStorage.setItem(
-        EVENT_MAP_KEY,
-        JSON.stringify(savedEventMap)
+        sessionStorage.setItem(
+          EVENT_COUNTER_KEY,
+          currentCounter
+        );
+      }
+
+      const payload = {
+        eventName: eventName,
+
+        eventSequence,
+
+        eventTimestamp:
+          new Date().toISOString(),
+
+        customerId: userNameExists,
+
+        sessionId,
+
+        page: currentPage,
+
+        device: {
+          browser: getBrowser(),
+          operatingSystem:
+            getOperatingSystem(),
+          deviceType: getDeviceType(),
+        },
+
+        market: {
+          utmSource:
+            queryParams.get("utm_source") ||
+            "DIRECT",
+
+          campaign:
+            queryParams.get(
+              "utm_campaign"
+            ) || "UNKNOWN",
+        },
+
+        referrer: {
+          url:
+            window.location.origin +
+            window.location.pathname,
+
+          referrer:
+            document.referrer || "DIRECT",
+        },
+
+        promotion: {
+          promotionId: 45,
+          promotionName:
+            "Bagels & Shamer",
+        },
+      };
+
+      await axios.post(
+        "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/PromotionEvent",
+        payload,
+        {
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+        }
       );
-
-      sessionStorage.setItem(
-        EVENT_COUNTER_KEY,
-        currentCounter
+    } catch (error) {
+      console.log(
+        "Promotion Tracking Error:",
+        error
       );
     }
+  };
 
-    const payload = {
-      eventName:eventName,
+  const handleClaimFreeBagel = async () => {
+    await addToCart({
+      ...freeBagelPromo,
+      price: 0,
+      isPromoItem: true,
+    });
 
-      eventSequence,
-
-      eventTimestamp:
-        new Date().toISOString(),
-
-      customerId: userNameExists,
-
-      sessionId,
-
-      page: currentPage,
-
-      device: {
-        browser: getBrowser(),
-        operatingSystem:
-          getOperatingSystem(),
-        deviceType: getDeviceType(),
-      },
-
-      market: {
-        utmSource:
-          queryParams.get("utm_source") ||
-          "DIRECT",
-
-        campaign:
-          queryParams.get(
-            "utm_campaign"
-          ) || "UNKNOWN",
-      },
-
-      referrer: {
-        url:
-          window.location.origin +
-          window.location.pathname,
-
-        referrer:
-          document.referrer || "DIRECT",
-      },
-
-      promotion: {
-        promotionId: 45,
-        promotionName:
-          "Bagels & Shamer",
-      },
-    };
-
-    await axios.post(
-      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/PromotionEvent",
-      payload,
-      {
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-      }
-    );
-  } catch (error) {
-    console.log(
-      "Promotion Tracking Error:",
-      error
-    );
-  }
-};
- 
-const handleClaimFreeBagel = async () => {
-  await addToCart({
-    ...freeBagelPromo,
-    price: 0,
-    isPromoItem: true,
-  });
-
-  await capturePromotionEvent("PROMOTION_FREE_BAGEL_CLAIMED");
-  sessionStorage.setItem("freeBagelClaimed", "true");
-};
+    await capturePromotionEvent("PROMOTION_FREE_BAGEL_CLAIMED");
+    sessionStorage.setItem("freeBagelClaimed", "true");
+  };
 
 
   // -----------------------------------
@@ -925,7 +927,7 @@ const handleClaimFreeBagel = async () => {
       }
     };
 
-    
+
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
@@ -946,7 +948,7 @@ const handleClaimFreeBagel = async () => {
 
 
 
-  
+
 
   // INITIAL SETUP
   // useEffect(() => {
@@ -1025,39 +1027,39 @@ const handleClaimFreeBagel = async () => {
   // };
 
   const addToCart = async (item) => {
-  const existingItem = cart.find(
-    (cartItem) => cartItem.itemId === item.id
-  );
+    const existingItem = cart.find(
+      (cartItem) => cartItem.itemId === item.id
+    );
 
-  if (existingItem) {
-    const updatedCart = cart.map((cartItem) =>
-      cartItem.itemId === item.id
-        ? {
+    if (existingItem) {
+      const updatedCart = cart.map((cartItem) =>
+        cartItem.itemId === item.id
+          ? {
             ...cartItem,
             quantity: cartItem.quantity + 1,
             itemTotalPrice:
               (cartItem.quantity + 1) * cartItem.price,
           }
-        : cartItem
-    );
+          : cartItem
+      );
 
-    setCart(updatedCart);
-  } else {
-    const cartPayload = {
-      itemId: item.id,
-      itemName: item.name,
-      itemImg: item.image,
-      price: item.price,
-      quantity: 1,
-      itemTotalPrice: item.totalPrice,
-      itemDiscount: (Math.random() * 25).toFixed(2),
-    };
+      setCart(updatedCart);
+    } else {
+      const cartPayload = {
+        itemId: Number(item.id),
+        itemName: item.name,
+        itemImg: item.image,
+        price: Number(item.price),
+        quantity: 1,
+        itemTotalPrice: Number(item.totalPrice),
+        itemDiscount: (Math.random() * 25).toFixed(2),
+      };
 
-    setCart([...cart, cartPayload]);
-  }
+      setCart([...cart, cartPayload]);
+    }
 
-  await captureEvent("ADD_TO_CART");
-};
+    await captureEvent("ADD_TO_CART");
+  };
   // -----------------------------------
   // ADD UPSELL ITEM TO CART
   // SEPARATE FROM addToCart SO IT FIRES
@@ -1179,22 +1181,88 @@ const handleClaimFreeBagel = async () => {
   // PAYMENT
   // -----------------------------------
 
+  // const saveCart = async () => {
+  //   const payload = {
+  //     cartItemId: crypto.randomUUID(),
+  //     userName: sessionStorage.getItem("username"),
+  //     isCartActive: true,
+  //     createdDate: new Date().toISOString(),
+  //     cartItems: cart,
+  //   };
+
+  //   if (cart.length > savedCartItems.length) {
+  //     const cartitemId = sessionStorage.getItem("CartId");
+  //     const username = sessionStorage.getItem("username");
+  //     const cartpayload = {
+  //       "cartItemId": cartitemId,
+  //       "userName": username,
+  //       "isCartActive": true,
+  //       "cartItems": cart
+  //     }
+  //     console.log("cartPayload", cartpayload)
+  //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/UpdateCart";
+  //     const response = await axios.put(url, cartpayload)
+  //     //console.log("url", url);
+
+  //     console.log("CARTData", cart);
+  //     console.log("Api Data", savedCartItems)
+
+
+  //   } else if (savedCartItems.length == 0) {
+  //     console.log("PAYLOAD JSON");
+  //     console.log(JSON.stringify(payload, null, 2));
+  //     const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart"
+  //     await axios.post(url, payload);
+  //   }
+
+  //   // // Add this
+
+  // };
+
   const saveCart = async () => {
-    const payload = {
+  const cartItemId = sessionStorage.getItem("CartId");
+
+  if (cartItemId) {
+    
+    const savedIds = savedCartItems.map(item => item.itemId);
+    const newItems = cart.filter(item => !savedIds.includes(item.itemId));
+
+    if (newItems.length === 0) {
+      console.log("No new items, skipping");
+      return;
+    }
+
+    const cartPayload = {
+      cartItemId: cartItemId,
+      userName: sessionStorage.getItem("username"),
+      isCartActive: true,
+      modifiedDate: new Date().toISOString(),
+      cartItems: cart
+    };
+
+    console.log("UPDATE payload:", cartPayload);
+    await axios.put(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/UpdateCart",
+      cartPayload
+    );
+
+  } else {
+   
+    const cartPayload = {
       cartItemId: crypto.randomUUID(),
       userName: sessionStorage.getItem("username"),
       isCartActive: true,
       createdDate: new Date().toISOString(),
-      cartItems: cart,
+      cartItems: cart
     };
-  console.log("CART", cart);
 
-  // Add this
-  console.log("PAYLOAD JSON");
-  console.log(JSON.stringify(payload, null, 2));
-    const url = "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart"
-    await axios.post(url, payload);
-  };
+    console.log("CREATE payload:", cartPayload);
+    await axios.post(
+      "https://app-customerevents-southindia-bud0d7e9a5akhuep.southindia-01.azurewebsites.net/api/v1/CreateCart",
+      cartPayload
+    );
+  }
+};
 
   const handlePayment = async () => {
     if (!deliveryDetails.fullName || !deliveryDetails.phone) {
@@ -1233,10 +1301,10 @@ const handleClaimFreeBagel = async () => {
       createdAt: new Date().toISOString(),
     };
     sessionStorage.setItem("latestOrder", JSON.stringify(orderPayload));
-    
+
     await saveCart()
     if (sessionStorage.getItem("freeBagelClaimed") === "true") {
-    await capturePromotionEvent("PROMOTION_FREE_BAGEL_REDEEMED");
+      await capturePromotionEvent("PROMOTION_FREE_BAGEL_REDEEMED");
     }
     await captureEvent("PROCEED_TO_CHECKOUT");
 
@@ -1377,10 +1445,10 @@ const handleClaimFreeBagel = async () => {
                                 setShowPickupModal(false);
 
                                 setTimeout(async () => {
-    setShowPromotionModal(true);
+                                  setShowPromotionModal(true);
 
-    await captureEvent("PROMOTION_SHOWN");
-  }, 1500);
+                                  await captureEvent("PROMOTION_SHOWN");
+                                }, 1500);
                               }}
                             >
                               ASAP
@@ -1404,40 +1472,40 @@ const handleClaimFreeBagel = async () => {
                     )}
 
                     {showPromotionModal && (
-  <div className="modalOverlay">
-    <div className="promotionModal">
-      <h2>🎉 Special Offer</h2>
+                      <div className="modalOverlay">
+                        <div className="promotionModal">
+                          <h2>🎉 Special Offer</h2>
 
-      <p>
-        Get 20% OFF on your order today.
-      </p>
+                          <p>
+                            Get 20% OFF on your order today.
+                          </p>
 
-      <div className="couponBox">
-        {PROMO_CODE}
-      </div>
+                          <div className="couponBox">
+                            {PROMO_CODE}
+                          </div>
 
-      <button
-        className="copyCouponBtn"
-        onClick={async () => {
-          navigator.clipboard.writeText(PROMO_CODE);
+                          <button
+                            className="copyCouponBtn"
+                            onClick={async () => {
+                              navigator.clipboard.writeText(PROMO_CODE);
 
-          await captureEvent("PROMOTION_COUPON_COPIED");
-          
-          setShowPromotionModal(false);
-        }}
-      >
-        Copy Coupon
-      </button>
+                              await captureEvent("PROMOTION_COUPON_COPIED");
 
-      <button
-        className="closePromoBtn"
-        onClick={() => setShowPromotionModal(false)}
-      >
-        Continue Shopping
-      </button>
-    </div>
-  </div>
-)}
+                              setShowPromotionModal(false);
+                            }}
+                          >
+                            Copy Coupon
+                          </button>
+
+                          <button
+                            className="closePromoBtn"
+                            onClick={() => setShowPromotionModal(false)}
+                          >
+                            Continue Shopping
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     {/* NAVBAR */}
 
@@ -1490,113 +1558,113 @@ const handleClaimFreeBagel = async () => {
 
                     <section className="menuSection">
 
-                      <div className = "sectionEach">
-                      <p className="menuSub">OUR MENU</p>
+                      <div className="sectionEach">
+                        <p className="menuSub">OUR MENU</p>
 
-                      <h2 className="menuTitle">Today's specials</h2>
+                        <h2 className="menuTitle">Today's specials</h2>
 
-                      <div className="cardGrid">
-                        {todaysSpecials.map((item) => (
-                          <div className="card" key={item.id}>
-                            <img src={item.image} alt={item.name} />
+                        <div className="cardGrid">
+                          {todaysSpecials.map((item) => (
+                            <div className="card" key={item.id}>
+                              <img src={item.image} alt={item.name} />
 
-                            <div className="cardContent">
-                              <div className="cardTop">
-                                <h3>{item.name}</h3>
+                              <div className="cardContent">
+                                <div className="cardTop">
+                                  <h3>{item.name}</h3>
 
-                                <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                                  <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                                </div>
+
+                                <button onClick={() => addToCart(item)}>
+                                  Add to cart
+                                </button>
                               </div>
-
-                              <button onClick={() => addToCart(item)}>
-                                Add to cart
-                              </button>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="promoSection">
-  <h2 className="promoTitle">🎁 First Order Reward</h2>
+                        <h2 className="promoTitle">🎁 First Order Reward</h2>
 
-  <div className="promoCard">
-    <img
-      src={freeBagelPromo?.image}
-      alt={freeBagelPromo?.name}
-    />
+                        <div className="promoCard">
+                          <img
+                            src={freeBagelPromo?.image}
+                            alt={freeBagelPromo?.name}
+                          />
 
-    <div className="promoContent">
-      <h3>FREE Bagel for First-Time Customers</h3>
+                          <div className="promoContent">
+                            <h3>FREE Bagel for First-Time Customers</h3>
 
-      <p>
-        Add more than 2 items to your cart and unlock a FREE
-        Classic Bagel on your first order.
-      </p>
+                            <p>
+                              Add more than 2 items to your cart and unlock a FREE
+                              Classic Bagel on your first order.
+                            </p>
 
-      <div className="promoItem">
-        <strong>{freeBagelPromo?.name}</strong>
-        <span>FREE</span>
-      </div>
-
-    <button
-  disabled={totalItems < 3}
-   onClick={handleClaimFreeBagel}
->
-  {totalItems < 3
-    ? `Add ${3 - totalItems} more item(s)`
-    : "Claim Free Bagel"}
-</button>
-    </div>
-  </div>
-</div>
-                      
-                      <div className="sectionEachh">
-                       <h2 className="itemsTitle">Lunch Classics</h2>
-                       {lunchClassics.length > 0 && (
-                        <div className="cardGrid">
-                          {lunchClassics.map((item) => (
-                            <div className="card" key={item.id}>
-                              <img src={item.image} alt={item.name} />
-
-                              <div className="cardContent">
-                                <div className="cardTop">
-                                  <h3>{item.name}</h3>
-                                  <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
-                                </div>
-
-                                <button onClick={() => addToCart(item)}>
-                                  Add to cart
-                                </button>
-                              </div>  
+                            <div className="promoItem">
+                              <strong>{freeBagelPromo?.name}</strong>
+                              <span>FREE</span>
                             </div>
-                          ))}
+
+                            <button
+                              disabled={totalItems < 3}
+                              onClick={handleClaimFreeBagel}
+                            >
+                              {totalItems < 3
+                                ? `Add ${3 - totalItems} more item(s)`
+                                : "Claim Free Bagel"}
+                            </button>
+                          </div>
                         </div>
-                       )
-                       }
                       </div>
-  <div className="sectionEachh">
-                       <h2 className="itemsTitle">Classic Bevarages</h2>
-                       {pairWithItems.length > 0 && (
-                        <div className="cardGrid">
-                          {pairWithItems.map((item) => (
-                            <div className="card" key={item.id}>
-                              <img src={item.image} alt={item.name} />
 
-                              <div className="cardContent">
-                                <div className="cardTop">
-                                  <h3>{item.name}</h3>
-                                  <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                      <div className="sectionEachh">
+                        <h2 className="itemsTitle">Lunch Classics</h2>
+                        {lunchClassics.length > 0 && (
+                          <div className="cardGrid">
+                            {lunchClassics.map((item) => (
+                              <div className="card" key={item.id}>
+                                <img src={item.image} alt={item.name} />
+
+                                <div className="cardContent">
+                                  <div className="cardTop">
+                                    <h3>{item.name}</h3>
+                                    <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                                  </div>
+
+                                  <button onClick={() => addToCart(item)}>
+                                    Add to cart
+                                  </button>
                                 </div>
+                              </div>
+                            ))}
+                          </div>
+                        )
+                        }
+                      </div>
+                      <div className="sectionEachh">
+                        <h2 className="itemsTitle">Classic Bevarages</h2>
+                        {pairWithItems.length > 0 && (
+                          <div className="cardGrid">
+                            {pairWithItems.map((item) => (
+                              <div className="card" key={item.id}>
+                                <img src={item.image} alt={item.name} />
 
-                                <button onClick={() => addToCart(item)}>
-                                  Add to cart
-                                </button>
-                              </div>  
-                            </div>
-                          ))}
-                        </div>
-                       )
-                       }
+                                <div className="cardContent">
+                                  <div className="cardTop">
+                                    <h3>{item.name}</h3>
+                                    <span>${item.price ? item.price.toFixed(2) : "0.00"}</span>
+                                  </div>
+
+                                  <button onClick={() => addToCart(item)}>
+                                    Add to cart
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )
+                        }
                       </div>
                     </section>
                   </>
@@ -1633,7 +1701,7 @@ const handleClaimFreeBagel = async () => {
                         ) : (
                           <>
                             <div className="cartItems">
-                              
+
 
                               {cart.map((item) => (
                                 <div className="cartItem" key={item.itemId}>
@@ -1767,29 +1835,29 @@ const handleClaimFreeBagel = async () => {
 
                         </div>
 
-<div className="couponContainer">
-  <input
-    type="text"
-    className="couponInput"
-    placeholder="Enter coupon code"
-    value={couponCode}
-    onChange={(e) => setCouponCode(e.target.value)}
-  />
+                        <div className="couponContainer">
+                          <input
+                            type="text"
+                            className="couponInput"
+                            placeholder="Enter coupon code"
+                            value={couponCode}
+                            onChange={(e) => setCouponCode(e.target.value)}
+                          />
 
-  <button
-    className="couponBtn"
-    onClick={async () => {
-  if (couponCode.trim().toUpperCase() === "SUNRISE20") {
-    await captureEvent("PROMOTION_COUPON_REDEEMED");
-    alert("Coupon Applied!");
-  } else {
-    alert("Invalid Coupon");
-  }
-}}
-  >
-    Add Coupon
-  </button>
-</div>
+                          <button
+                            className="couponBtn"
+                            onClick={async () => {
+                              if (couponCode.trim().toUpperCase() === "SUNRISE20") {
+                                await captureEvent("PROMOTION_COUPON_REDEEMED");
+                                alert("Coupon Applied!");
+                              } else {
+                                alert("Invalid Coupon");
+                              }
+                            }}
+                          >
+                            Add Coupon
+                          </button>
+                        </div>
 
 
                         <button
