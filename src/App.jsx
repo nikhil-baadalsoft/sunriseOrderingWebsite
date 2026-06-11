@@ -885,41 +885,75 @@ function App() {
 
 
 
-  const addToCart = async (item) => {
-    const existingItem = cart.find(
-      (cartItem) => cartItem.itemId === item.id
+  // const addToCart = async (item) => {
+  //   const existingItem = cart.find(
+  //     (cartItem) => cartItem.itemId === item.id
+  //   );
+
+  //   if (existingItem) {
+  //     const updatedCart = cart.map((cartItem) =>
+  //       cartItem.itemId === item.id
+  //         ? {
+  //           ...cartItem,
+  //           quantity: cartItem.quantity + 1,
+  //           itemTotalPrice:
+  //             (cartItem.quantity + 1) * cartItem.price,
+  //         }
+  //         : cartItem
+  //     );
+
+  //     setCart(updatedCart);
+  //   } else {
+  //     const cartPayload = {
+  //       itemId: Number(item.id),
+  //       itemName: item.name,
+  //       itemImg: item.image,
+  //       price: Number(item.price),
+  //       quantity: 1,
+  //       itemTotalPrice: Number(item.totalPrice),
+  //       itemDiscount: (Math.random() * 25).toFixed(2),
+  //     };
+
+  //     setCart([...cart, cartPayload]);
+  //   }
+
+  //   await captureEvent("ADD_TO_CART");
+  // };
+const addToCart = async (item) => {
+  setCart((prevCart) => {
+    const existingItem = prevCart.find(
+      (cartItem) => String(cartItem.itemId) === String(item.id)
     );
 
     if (existingItem) {
-      const updatedCart = cart.map((cartItem) =>
-        cartItem.itemId === item.id
+      return prevCart.map((cartItem) =>
+        String(cartItem.itemId) === String(item.id)
           ? {
-            ...cartItem,
-            quantity: cartItem.quantity + 1,
-            itemTotalPrice:
-              (cartItem.quantity + 1) * cartItem.price,
-          }
+              ...cartItem,
+              quantity: cartItem.quantity + 1,
+              itemTotalPrice:
+                (cartItem.quantity + 1) * cartItem.price,
+            }
           : cartItem
       );
-
-      setCart(updatedCart);
-    } else {
-      const cartPayload = {
-        itemId: Number(item.id),
-        itemName: item.name,
-        itemImg: item.image,
-        price: Number(item.price),
-        quantity: 1,
-        itemTotalPrice: Number(item.totalPrice),
-        itemDiscount: (Math.random() * 25).toFixed(2),
-      };
-
-      setCart([...cart, cartPayload]);
     }
 
-    await captureEvent("ADD_TO_CART");
-  };
+    return [
+      ...prevCart,
+      {
+        itemId: item.id,
+        itemName: item.name,
+        itemImg: item.image,
+        price: item.price,
+        quantity: 1,
+        itemTotalPrice: item.price,
+        itemDiscount: (Math.random() * 25).toFixed(2),
+      },
+    ];
+  });
 
+  await captureEvent("ADD_TO_CART");
+};
   const addUpsellToCart = async (item) => {
     const existingItem = cart.find(
       (cartItem) => cartItem.itemId === item.id
